@@ -10,8 +10,8 @@ namespace Week1
     public class Entity : MonoBehaviour
     {
         public int health { get; private set; }
-        SpriteRenderer spriteRenderer;
-        bool immune = false;
+        protected SpriteRenderer spriteRenderer;
+        protected bool immune = false;
         float immuneTime = 0f;
 
         protected virtual void Awake()
@@ -19,7 +19,7 @@ namespace Week1
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        public virtual void SetHealth(int number, float immuneTime, string tag)
+        public virtual void Setup(int number, float immuneTime, string tag)
         {
             this.health = number;
             this.tag = tag;
@@ -41,21 +41,26 @@ namespace Week1
             }
             SetAlpha(1);
             immune = false;
-
-            void SetAlpha(float alpha)
-            {
-                Color newColor = spriteRenderer.color;
-                newColor.a = alpha;
-                spriteRenderer.color = newColor;
-            }
         }
 
-        public void TakeDamage()
+        protected void SetAlpha(float alpha)
+        {
+            Color newColor = spriteRenderer.color;
+            newColor.a = alpha;
+            spriteRenderer.color = newColor;
+        }
+
+        public void TakeDamage(GameObject source)
         {
             if (immune)
+            {
                 return;
+            }
 
             health--;
+            if (source != null)
+                Destroy(source);
+
             if (health == 0)
                 DeathEffect();
             else
@@ -64,7 +69,6 @@ namespace Week1
 
         protected virtual void DeathEffect()
         {
-            Destroy(this.gameObject);
         }
     }
 }

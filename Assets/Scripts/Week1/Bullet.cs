@@ -35,10 +35,7 @@ namespace Week1
             if (collision.TryGetComponent(out Entity target))
             {
                 if (!this.CompareTag(target.tag))
-                {
-                    target.TakeDamage();
-                    Destroy(this.gameObject);
-                }
+                    target.TakeDamage(this.gameObject);
             }
         }
     }

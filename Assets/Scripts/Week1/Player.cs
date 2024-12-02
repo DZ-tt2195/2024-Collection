@@ -24,7 +24,7 @@ namespace Week1
         {
             base.Awake();
             instance = this;
-            this.SetHealth(3, 2f, "Player");
+            this.Setup(3, 2f, "Player");
         }
 
         void Update()
@@ -45,12 +45,12 @@ namespace Week1
             else
             {
                 currentRecharge += Time.deltaTime;
-                if (currentRecharge > 1.5f)
+                if (currentRecharge > 1)
                 {
                     currentRecharge = 0f;
                     currentBullet++;
                 }
-                bulletSlider.value = currentRecharge / 1.5f;
+                bulletSlider.value = currentRecharge / 1;
             }
             bulletCounter.text = $"Bullets: {currentBullet} / 5";
         }
@@ -60,8 +60,7 @@ namespace Week1
             if (Input.GetKeyDown(KeyCode.Mouse0) && currentBullet >= 1)
             {
                 currentBullet--;
-                for (int i = -2; i<=2; i++)
-                    PrefabLoader.instance.CreateBullet(this, this.transform.position, 1, new(i, 7.5f));
+                PrefabLoader.instance.CreateBullet(this, this.transform.position, 1, new(0, 7f));
             }
         }
 
@@ -84,13 +83,14 @@ namespace Week1
 
         protected override void DeathEffect()
         {
+            immune = true;
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.TryGetComponent(out Entity target))
             {
-                this.TakeDamage();
+                this.TakeDamage(null);
             }
         }
     }

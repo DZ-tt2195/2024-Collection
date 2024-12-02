@@ -10,6 +10,7 @@ namespace Week1
         private void Awake()
         {
             instance = this;
+            this.SetHealth(3);
         }
 
         void Update()
@@ -22,12 +23,8 @@ namespace Week1
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                PrefabLoader.instance.CreateBullet(this, Movement);
-            }
-
-            void Movement(Bullet bullet)
-            {
-                bullet.transform.Translate(new(0, 5 * Time.deltaTime), Space.World);
+                for (int i = -2; i<=2; i++)
+                    PrefabLoader.instance.CreateBullet(this, this.transform.position, 1, new(i, 7.5f));
             }
         }
 
@@ -46,6 +43,10 @@ namespace Week1
             targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
             targetPosition.y = Mathf.Clamp(targetPosition.y, minY, maxY);
             transform.position = targetPosition;
+        }
+
+        protected override void DeathEffect()
+        {
         }
     }
 }

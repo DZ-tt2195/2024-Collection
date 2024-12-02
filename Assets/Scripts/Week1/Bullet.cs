@@ -7,25 +7,16 @@ namespace Week1
     public class Bullet : MonoBehaviour
     {
         SpriteRenderer spriteRenderer;
-        Entity owner;
-        Action<Bullet> movement;
+        public Vector3 direction;
 
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        internal void AssignInfo(Entity owner, Action<Bullet> movement)
-        {
-            this.owner = owner;
-            this.movement = movement;
-        }
-
         private void Update()
         {
-            if (owner != null && movement != null)
-                movement(this);
-
+            this.transform.Translate(direction * Time.deltaTime);
             float cameraHeight = 2f * Player.instance.mainCamera.orthographicSize;
             float cameraWidth = cameraHeight * Player.instance.mainCamera.aspect;
 
@@ -37,6 +28,18 @@ namespace Week1
             if (this.transform.position.x < minX || this.transform.position.x > maxX ||
                 this.transform.position.y < minY || this.transform.position.y > maxY)
                 Destroy(this.gameObject);
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.TryGetComponent(out Entity target))
+            {
+                if (!this.CompareTag(target.tag))
+                {
+                    target.TakeDamage();
+                    Destroy(this.gameObject);
+                }
+            }
         }
     }
 }

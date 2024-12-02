@@ -13,11 +13,13 @@ namespace Week1
             instance = this;
         }
 
-        public void CreateBullet(Entity entity, Action<Bullet> action)
+        public void CreateBullet(Entity entity, Vector3 start, float scale, Vector3 direction)
         {
             Bullet bullet = Instantiate(bulletPrefab);
-            bullet.transform.position = entity.transform.position;
-            bullet.AssignInfo(entity, action);
+            bullet.tag = entity.tag;
+            bullet.transform.localScale = new(scale, scale, scale);
+            bullet.transform.position = start;
+            bullet.direction = direction;
         }
     }
 }

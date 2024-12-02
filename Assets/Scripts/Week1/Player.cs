@@ -1,28 +1,65 @@
 using UnityEngine;
+using UnityEngine.UI;
+using MyBox;
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 
 namespace Week1
 {
     public class Player : Entity
     {
         public static Player instance;
-        public Camera mainCamera; // Assign the main camera in the Inspector
+        public Camera mainCamera;
 
-        private void Awake()
+        [SerializeField] Slider healthSlider;
+        [SerializeField] TMP_Text healthCounter;
+
+        int currentBullet = 0;
+        float currentRecharge = 0f;
+        [SerializeField] Slider bulletSlider;
+        [SerializeField] TMP_Text bulletCounter;
+
+        protected override void Awake()
         {
+            base.Awake();
             instance = this;
-            this.SetHealth(3);
+            this.SetHealth(3, 2f, "Player");
         }
 
         void Update()
         {
-            FollowMouse();
-            ShootBullet();
+            if (health > 0)
+            {
+                FollowMouse();
+                ShootBullet();
+            }
+
+            healthSlider.value = health / 3f;
+            healthCounter.text = $"Health: {health} / 3";
+
+            if (5 == currentBullet)
+            {
+                bulletSlider.value = 1;
+            }
+            else
+            {
+                currentRecharge += Time.deltaTime;
+                if (currentRecharge > 1.5f)
+                {
+                    currentRecharge = 0f;
+                    currentBullet++;
+                }
+                bulletSlider.value = currentRecharge / 1.5f;
+            }
+            bulletCounter.text = $"Bullets: {currentBullet} / 5";
         }
 
         void ShootBullet()
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse0) && currentBullet >= 1)
             {
+                currentBullet--;
                 for (int i = -2; i<=2; i++)
                     PrefabLoader.instance.CreateBullet(this, this.transform.position, 1, new(i, 7.5f));
             }
@@ -47,6 +84,14 @@ namespace Week1
 
         protected override void DeathEffect()
         {
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.TryGetComponent(out Entity target))
+            {
+                this.TakeDamage();
+            }
         }
     }
 }

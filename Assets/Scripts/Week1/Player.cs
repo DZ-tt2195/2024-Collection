@@ -2,22 +2,39 @@ using UnityEngine;
 
 namespace Week1
 {
-    public class Player : MonoBehaviour
+    public class Player : Entity
     {
-        [SerializeField] private Camera mainCamera; // Assign the main camera in the Inspector
-        [SerializeField] private float followSpeed; // Speed at which the player follows the mouse
-        [SerializeField] private float zOffset = 0f; // Z position offset (optional, if 2D)
+        public static Player instance;
+        public Camera mainCamera; // Assign the main camera in the Inspector
+
+        private void Awake()
+        {
+            instance = this;
+        }
 
         void Update()
         {
+            FollowMouse();
+            ShootBullet();
+        }
+
+        void ShootBullet()
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                PrefabLoader.instance.CreateBullet(this, Movement);
+            }
+
+            void Movement(Bullet bullet)
+            {
+                bullet.transform.Translate(new(0, 5 * Time.deltaTime), Space.World);
+            }
+        }
+
+        void FollowMouse()
+        {
             Vector3 mouseScreenPosition = Input.mousePosition;
-
-            Vector3 targetPosition = mainCamera.ScreenToWorldPoint(new Vector3(
-                mouseScreenPosition.x,
-                mouseScreenPosition.y,
-                mainCamera.nearClipPlane + zOffset
-            ));
-
+            Vector3 targetPosition = mainCamera.ScreenToWorldPoint(new(mouseScreenPosition.x, mouseScreenPosition.y, mainCamera.nearClipPlane));
             float cameraHeight = 2f * mainCamera.orthographicSize;
             float cameraWidth = cameraHeight * mainCamera.aspect;
 
@@ -28,7 +45,7 @@ namespace Week1
 
             targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
             targetPosition.y = Mathf.Clamp(targetPosition.y, minY, maxY);
-            transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
+            transform.position = targetPosition;
         }
     }
 }

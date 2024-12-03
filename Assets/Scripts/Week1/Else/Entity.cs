@@ -52,7 +52,7 @@ namespace Week1
 
         public void TakeDamage(GameObject source)
         {
-            if (immune)
+            if (immune || (source != null && this.CompareTag(source.tag)))
             {
                 return;
             }

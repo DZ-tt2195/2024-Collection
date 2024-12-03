@@ -9,7 +9,7 @@ namespace Week1
 {
     public class WaveManager : MonoBehaviour
     {
-        [SerializeField] List<BaseEnemy> listOfEnemies = new();
+        List<BaseEnemy> listOfEnemies = new();
 
         private void Awake()
         {

@@ -6,13 +6,8 @@ namespace Week1
 {
     public class Bullet : MonoBehaviour
     {
-        SpriteRenderer spriteRenderer;
+        public SpriteRenderer spriteRenderer;
         public Vector3 direction;
-
-        private void Awake()
-        {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-        }
 
         private void Update()
         {
@@ -33,10 +28,7 @@ namespace Week1
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.TryGetComponent(out Entity target))
-            {
-                if (!this.CompareTag(target.tag))
-                    target.TakeDamage(this.gameObject);
-            }
+                target.TakeDamage(this.gameObject);
         }
     }
 }

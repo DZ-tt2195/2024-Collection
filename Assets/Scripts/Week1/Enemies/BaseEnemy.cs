@@ -20,7 +20,7 @@ namespace Week1
         protected virtual void ShootBullet()
         {
             Vector2 target = (stat.customTarget) ? stat.aim : AimAtPlayer();
-            PrefabLoader.instance.CreateBullet(this, stat.bulletColor,
+            WaveManager.instance.CreateBullet(this, stat.bulletColor,
                 this.transform.position, stat.bulletSize, target*stat.bulletSpeed);
         }
 

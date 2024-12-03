@@ -24,7 +24,7 @@ namespace Week1
         {
             base.Awake();
             instance = this;
-            this.Setup(3, 2f, "Player");
+            this.Setup(5, 2f, "Player");
         }
 
         void Update()
@@ -35,8 +35,8 @@ namespace Week1
                 ShootBullet();
             }
 
-            healthSlider.value = health / 3f;
-            healthCounter.text = $"Health: {health} / 3";
+            healthSlider.value = health / 5f;
+            healthCounter.text = $"Health: {health} / 5";
 
             if (5 == currentBullet)
             {
@@ -60,7 +60,7 @@ namespace Week1
             if (Input.GetKeyDown(KeyCode.Mouse0) && currentBullet >= 1)
             {
                 currentBullet--;
-                PrefabLoader.instance.CreateBullet(this, spriteRenderer.color, this.transform.position, Vector3.one, new(0, 7f));
+                WaveManager.instance.CreateBullet(this, spriteRenderer.color, this.transform.position, Vector3.one, new(0, 7f));
             }
         }
 

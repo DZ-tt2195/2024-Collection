@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Enemy1
   m_EditorClassIdentifier: 
   health: 3
-  bulletColor: {r: 0.5411765, g: 0.5411765, b: 1, a: 0}
+  bulletColor: {r: 0.5411765, g: 0.5411765, b: 1, a: 1}
   bulletSize: {x: 0.5, y: 0.5}
   customTarget: 0
   aim: {x: 0, y: 0}
   attackRate: 1
-  bulletSpeed: 3.5
+  bulletSpeed: 3.25

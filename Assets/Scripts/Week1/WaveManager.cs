@@ -10,25 +10,45 @@ namespace Week1
     public class WaveManager : MonoBehaviour
     {
         public static WaveManager instance;
-        List<BaseEnemy> listOfEnemies = new();
-        [SerializeField] List<EnemyStat> possibleEnemies = new();
+        List<BaseEnemy> allEnemies = new();
+        List<Wave> listOfWaves = new();
+        List<EnemyStat> listOfEnemies = new();
+
         [SerializeField] Bullet bulletPrefab;
         [SerializeField] BaseEnemy enemyPrefab;
-        int currentWave = 0;
+
+        [SerializeField] Slider waveSlider;
+        [SerializeField] TMP_Text waveCounter;
+        int currentWave = -1;
 
         private void Awake()
         {
             instance = this;
+
+            Wave[] loadedWaves = Resources.LoadAll<Wave>("Week1/Waves");
+            foreach (var obj in loadedWaves)
+                listOfWaves.Add(obj);
+            EnemyStat[] loadedEnemies = Resources.LoadAll<EnemyStat>("Week1/Enemies");
+            foreach (var obj in loadedEnemies)
+                listOfEnemies.Add(obj);
+
             NewWave();
         }
 
         void NewWave()
         {
             currentWave++;
-            for (int i = 0; i<currentWave*3; i++)
+            waveSlider.value = ((currentWave+1) / (float)listOfWaves.Count);
+            waveCounter.text = $"Wave {currentWave+1} / {listOfWaves.Count}";
+
+            try
             {
-                CreateEnemy(new(Random.Range(-8f, 8f), Random.Range(2.5f, 4.5f)),
-                    possibleEnemies[Random.Range(0, possibleEnemies.Count)]);
+                foreach (Vector2 vector in listOfWaves[currentWave].enemySpawns)
+                    CreateEnemy(vector, listOfEnemies[Random.Range(0, listOfEnemies.Count)]);
+            }
+            catch
+            {
+
             }
         }
 
@@ -37,7 +57,7 @@ namespace Week1
             BaseEnemy enemy = Instantiate(enemyPrefab);
             enemy.EnemySetup(stat);
             enemy.transform.position = start;
-            listOfEnemies.Add(enemy);
+            allEnemies.Add(enemy);
         }
 
         public void CreateBullet(Entity entity, Color color, Vector3 start, Vector3 scale, Vector3 direction)
@@ -52,19 +72,19 @@ namespace Week1
 
         private void Update()
         {
-            listOfEnemies.RemoveAll(enemy => enemy == null);
-            if (listOfEnemies.Count > 0)
+            allEnemies.RemoveAll(enemy => enemy == null);
+            if (allEnemies.Count > 0)
             {
-                foreach (BaseEnemy enemy in listOfEnemies)
+                foreach (BaseEnemy enemy in allEnemies)
                 {
                     if (enemy.health != 0)
                         return;
                 }
-                for (int i = listOfEnemies.Count - 1; i >= 0; i--)
+                for (int i = allEnemies.Count - 1; i >= 0; i--)
                 {
-                    Destroy(listOfEnemies[i].gameObject);
+                    Destroy(allEnemies[i].gameObject);
                 }
-                listOfEnemies.Clear();
+                allEnemies.Clear();
                 NewWave();
             }
         }

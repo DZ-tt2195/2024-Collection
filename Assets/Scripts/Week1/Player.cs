@@ -60,7 +60,7 @@ namespace Week1
             if (Input.GetKeyDown(KeyCode.Mouse0) && currentBullet >= 1)
             {
                 currentBullet--;
-                PrefabLoader.instance.CreateBullet(this, this.transform.position, 1, new(0, 7f));
+                PrefabLoader.instance.CreateBullet(this, this.transform.position, Vector3.one, new(0, 7f));
             }
         }
 

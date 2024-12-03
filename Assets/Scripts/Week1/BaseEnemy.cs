@@ -5,12 +5,12 @@ namespace Week1
     public class BaseEnemy : Entity
     {
         GameObject crossedOut;
-        float bulletSize;
-        float bulletSpeed;
+        protected Vector2 bulletSize { get; private set; }
+        protected float bulletSpeed { get; private set; }
 
-        protected void EnemySetup(int health, float bulletSize, float attackRate, float bulletSpeed)
+        protected void EnemySetup(int health, Vector2 bulletSize, float attackRate, float bulletSpeed)
         {
-            this.Setup(health, 0.1f, "Enemy");
+            this.Setup(health, 0f, "Enemy");
             crossedOut = transform.GetChild(0).gameObject;
             crossedOut.SetActive(false);
 
@@ -21,8 +21,12 @@ namespace Week1
 
         protected virtual void ShootBullet()
         {
-            Vector2 direction = (Player.instance.transform.position - this.transform.position).normalized;
-            PrefabLoader.instance.CreateBullet(this, this.transform.position, bulletSize, direction * bulletSpeed);
+            PrefabLoader.instance.CreateBullet(this, this.transform.position, bulletSize, AimAtPlayer() * bulletSpeed);
+        }
+
+        protected Vector2 AimAtPlayer()
+        {
+            return (Player.instance.transform.position - this.transform.position).normalized;
         }
 
         protected override void DeathEffect()

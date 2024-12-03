@@ -11,6 +11,11 @@ namespace Week1
     {
         [SerializeField] List<BaseEnemy> listOfEnemies = new();
 
+        private void Awake()
+        {
+            listOfEnemies = FindObjectsByType<BaseEnemy>(FindObjectsSortMode.None).ToList();
+        }
+
         private void Update()
         {
             listOfEnemies.RemoveAll(enemy => enemy == null);

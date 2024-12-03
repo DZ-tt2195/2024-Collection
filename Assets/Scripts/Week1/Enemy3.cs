@@ -7,7 +7,7 @@ namespace Week1
         protected override void Awake()
         {
             base.Awake();
-            this.EnemySetup(4, 1.25f, 1.25f, 1.5f);
+            this.EnemySetup(4, new(1.5f,1.5f), 1.5f, 2.5f);
         }
     }
 }

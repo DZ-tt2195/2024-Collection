@@ -73,6 +73,7 @@ namespace Week1
         protected override void DeathEffect()
         {
             immune = true;
+            WaveManager.instance.EndGame("You Lost.");
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -84,7 +85,7 @@ namespace Week1
             else if (collision.TryGetComponent(out Resupply resupply))
             {
                 WaveManager.instance.ReturnResupply(resupply);
-                currentBullet += 5;
+                currentBullet += 2;
             }
         }
     }

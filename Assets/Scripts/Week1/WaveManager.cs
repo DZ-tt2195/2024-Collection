@@ -4,40 +4,42 @@ using MyBox;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 
 namespace Week1
 {
     public class WaveManager : MonoBehaviour
     {
         public static WaveManager instance;
-        List<BaseEnemy> allEnemies = new();
-        List<Wave> listOfWaves = new();
-        List<EnemyStat> listOfEnemies = new();
 
+        List<BaseEnemy> allEnemies = new();
+        Wave[] listOfWaves;
+        EnemyStat[] listOfEnemies;
+
+        Queue<Bullet> bulletQueue = new();
+        Queue<Resupply> resupplyQueue = new();
+
+        [Foldout("Prefabs", true)]
         [SerializeField] Bullet bulletPrefab;
         [SerializeField] BaseEnemy enemyPrefab;
         [SerializeField] Resupply resupplyPrefab;
 
+        [Foldout("UI", true)]
         [SerializeField] Slider waveSlider;
         [SerializeField] TMP_Text waveCounter;
         int currentWave = -1;
-
-        Queue<Bullet> bulletQueue = new();
-        Queue<Resupply> resupplyQueue = new();
+        [SerializeField] Slider enemySlider;
+        [SerializeField] TMP_Text enemyCounter;
+        [SerializeField] TMP_Text endingText;
 
         private void Awake()
         {
             instance = this;
 
-            Wave[] loadedWaves = Resources.LoadAll<Wave>("Week1/Waves");
-            foreach (var obj in loadedWaves)
-                listOfWaves.Add(obj);
-            EnemyStat[] loadedEnemies = Resources.LoadAll<EnemyStat>("Week1/Enemies");
-            foreach (var obj in loadedEnemies)
-                listOfEnemies.Add(obj);
+            endingText.transform.gameObject.SetActive(false);
+            listOfWaves = Resources.LoadAll<Wave>("Week1/Waves");
+            listOfEnemies = Resources.LoadAll<EnemyStat>("Week1/Enemies");
 
-            InvokeRepeating(nameof(SpawnResupply), 0f, 7.5f);
+            InvokeRepeating(nameof(SpawnResupply), 0f, 3f);
             NewWave();
         }
 
@@ -60,13 +62,13 @@ namespace Week1
             {
                 currentWave++;
                 foreach (Vector2 vector in listOfWaves[currentWave].enemySpawns)
-                    CreateEnemy(vector, listOfEnemies[Random.Range(0, listOfEnemies.Count)]);
-                waveSlider.value = ((currentWave + 1) / (float)listOfWaves.Count);
-                waveCounter.text = $"Wave {currentWave + 1} / {listOfWaves.Count}";
+                    CreateEnemy(vector, listOfEnemies[Random.Range(0, listOfEnemies.Length)]);
+                waveSlider.value = ((currentWave + 1) / (float)listOfWaves.Length);
+                waveCounter.text = $"Wave {currentWave + 1} / {listOfWaves.Length}";
             }
             catch
             {
-
+                EndGame("You Won!");
             }
         }
 
@@ -98,20 +100,31 @@ namespace Week1
         private void Update()
         {
             allEnemies.RemoveAll(enemy => enemy == null);
+            int currentEnemies = 0;
             if (allEnemies.Count > 0)
             {
                 foreach (BaseEnemy enemy in allEnemies)
                 {
                     if (enemy.health != 0)
-                        return;
+                        currentEnemies++;
                 }
-                for (int i = allEnemies.Count - 1; i >= 0; i--)
+
+                enemySlider.value = (float)currentEnemies / allEnemies.Count;
+                enemyCounter.text = $"Enemies: {currentEnemies} / {allEnemies.Count}";
+
+                if (currentEnemies == 0)
                 {
-                    Destroy(allEnemies[i].gameObject);
+                    for (int i = allEnemies.Count - 1; i >= 0; i--)
+                        Destroy(allEnemies[i].gameObject);
+                    NewWave();
                 }
-                allEnemies.Clear();
-                NewWave();
             }
+        }
+
+        public void EndGame(string text)
+        {
+            endingText.transform.parent.gameObject.SetActive(true);
+            endingText.text = text;
         }
     }
 }

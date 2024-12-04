@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a44101f2891e4a5387e9dbf6d5c2dd7, type: 3}
   m_Name: Enemy4
   m_EditorClassIdentifier: 
-  health: 3
+  health: 4
   bulletColor: {r: 0.62352943, g: 0.62352943, b: 0.62352943, a: 1}
-  bulletSize: {x: 1.25, y: 3.5}
+  bulletSize: {x: 1.25, y: 3.25}
   customTarget: 1
   aim: {x: 0, y: -1}
   attackRate: 1.75

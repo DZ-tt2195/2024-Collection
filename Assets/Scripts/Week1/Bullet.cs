@@ -7,7 +7,7 @@ namespace Week1
     public class Bullet : MonoBehaviour
     {
         public SpriteRenderer spriteRenderer;
-        public Vector3 direction;
+        [ReadOnly] public Vector3 direction;
 
         float minX;
         float maxX;

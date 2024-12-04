@@ -1,16 +1,10 @@
 fileFormatVersion: 2
-guid: cc2e375e5f29e4c87b1782d728c80509
+guid: bbb115fc7865c4c8a886d81680249710
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9217276184568209470
-    second: Purple Cube_0
-  - first:
-      213: -2176509208893722213
-    second: Purple Cube_1
-  - first:
-      213: -7658391480919740667
-    second: Purple Cube_2
+      213: 5199979006384268662
+    second: Star_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -145,57 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Purple Cube_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 262
-        width: 388
-        height: 132
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e302bd9cad75aef70800000000000000
-      internalID: 9217276184568209470
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Purple Cube_1
-      rect:
-        serializedVersion: 2
-        x: 262
-        y: 0
-        width: 132
-        height: 388
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b91f589f76c7bc1e0800000000000000
-      internalID: -2176509208893722213
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Purple Cube_2
+      name: Star_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 259
-        height: 259
+        width: 449
+        height: 427
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -204,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 50fa6e4268de7b590800000000000000
-      internalID: -7658391480919740667
+      spriteID: 675e50b0b590a2840800000000000000
+      internalID: 5199979006384268662
       vertices: []
       indices: 
       edges: []
@@ -214,17 +164,14 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      Purple Cube_0: 9217276184568209470
-      Purple Cube_1: -2176509208893722213
-      Purple Cube_2: -7658391480919740667
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

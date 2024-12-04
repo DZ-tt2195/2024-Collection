@@ -4,6 +4,7 @@ using MyBox;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 
 namespace Week1
 {
@@ -16,10 +17,14 @@ namespace Week1
 
         [SerializeField] Bullet bulletPrefab;
         [SerializeField] BaseEnemy enemyPrefab;
+        [SerializeField] Resupply resupplyPrefab;
 
         [SerializeField] Slider waveSlider;
         [SerializeField] TMP_Text waveCounter;
         int currentWave = -1;
+
+        Queue<Bullet> bulletQueue = new();
+        Queue<Resupply> resupplyQueue = new();
 
         private void Awake()
         {
@@ -32,19 +37,32 @@ namespace Week1
             foreach (var obj in loadedEnemies)
                 listOfEnemies.Add(obj);
 
+            InvokeRepeating(nameof(SpawnResupply), 0f, 7.5f);
             NewWave();
+        }
+
+        void SpawnResupply()
+        {
+            Resupply resupply = (resupplyQueue.Count > 0) ? resupplyQueue.Dequeue() : Instantiate(resupplyPrefab);
+            resupply.transform.position = new Vector2(Random.Range(-7f, 7f), 4f);
+            resupply.gameObject.SetActive(true);
+        }
+
+        public void ReturnResupply(Resupply resupply)
+        {
+            resupplyQueue.Enqueue(resupply);
+            resupply.gameObject.SetActive(false);
         }
 
         void NewWave()
         {
-            currentWave++;
-            waveSlider.value = ((currentWave+1) / (float)listOfWaves.Count);
-            waveCounter.text = $"Wave {currentWave+1} / {listOfWaves.Count}";
-
             try
             {
+                currentWave++;
                 foreach (Vector2 vector in listOfWaves[currentWave].enemySpawns)
                     CreateEnemy(vector, listOfEnemies[Random.Range(0, listOfEnemies.Count)]);
+                waveSlider.value = ((currentWave + 1) / (float)listOfWaves.Count);
+                waveCounter.text = $"Wave {currentWave + 1} / {listOfWaves.Count}";
             }
             catch
             {
@@ -62,12 +80,19 @@ namespace Week1
 
         public void CreateBullet(Entity entity, Color color, Vector3 start, Vector3 scale, Vector3 direction)
         {
-            Bullet bullet = Instantiate(bulletPrefab);
+            Bullet bullet = (bulletQueue.Count > 0) ? bulletQueue.Dequeue() : Instantiate(bulletPrefab);
             bullet.spriteRenderer.color = color;
             bullet.tag = entity.tag;
             bullet.transform.localScale = scale;
             bullet.transform.position = start;
             bullet.direction = direction;
+            bullet.gameObject.SetActive(true);
+        }
+
+        public void ReturnBullet(Bullet bullet)
+        {
+            bulletQueue.Enqueue(bullet);
+            bullet.gameObject.SetActive(false);
         }
 
         private void Update()

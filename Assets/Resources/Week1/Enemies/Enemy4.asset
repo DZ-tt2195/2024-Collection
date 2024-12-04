@@ -17,5 +17,5 @@ MonoBehaviour:
   bulletSize: {x: 1.25, y: 3.5}
   customTarget: 1
   aim: {x: 0, y: -1}
-  attackRate: 1.5
+  attackRate: 1.75
   bulletSpeed: 3.25

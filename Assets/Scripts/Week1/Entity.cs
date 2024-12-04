@@ -50,16 +50,16 @@ namespace Week1
             spriteRenderer.color = newColor;
         }
 
-        public void TakeDamage(GameObject source)
+        public void TakeDamage(Bullet bullet)
         {
-            if (immune || (source != null && this.CompareTag(source.tag)))
+            if (immune || (bullet != null && this.CompareTag(bullet.tag)))
             {
                 return;
             }
 
             health--;
-            if (source != null)
-                Destroy(source);
+            if (bullet != null)
+                WaveManager.instance.ReturnBullet(bullet);
 
             if (health == 0)
                 DeathEffect();

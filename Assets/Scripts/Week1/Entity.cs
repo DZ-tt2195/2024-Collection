@@ -32,13 +32,21 @@ namespace Week1
             float elapsedTime = 0f;
             bool flicker = true;
 
+            Vector3 darkness = new(0.1f, 0.1f, 0.1f);
+            Vector3 gray = new(0.25f, 0.25f, 0.25f);
+            Player.instance.mainCamera.backgroundColor = new(darkness.x, darkness.y, darkness.z);
+
             while (elapsedTime < immuneTime)
             {
                 flicker = !flicker;
                 elapsedTime += Time.deltaTime;
-                SetAlpha((flicker ? (elapsedTime / immuneTime) : 1f));
+                SetAlpha(flicker ? (elapsedTime / immuneTime) : 1f);
+                Vector3 target = Vector3.Lerp(darkness, gray, elapsedTime / immuneTime);
+                Player.instance.mainCamera.backgroundColor = new(target.x, target.y, target.z);
                 yield return null;
             }
+
+            Player.instance.mainCamera.backgroundColor = new(gray.x, gray.y, gray.z);
             SetAlpha(1);
             immune = false;
         }

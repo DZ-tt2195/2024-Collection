@@ -73,6 +73,7 @@ namespace Week1
         protected override void DeathEffect()
         {
             immune = true;
+            SetAlpha(0.5f);
             WaveManager.instance.EndGame("You Lost.");
         }
 

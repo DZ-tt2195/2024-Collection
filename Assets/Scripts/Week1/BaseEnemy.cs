@@ -19,9 +19,10 @@ namespace Week1
 
         protected virtual void ShootBullet()
         {
-            Vector2 target = (stat.customTarget) ? stat.aim : AimAtPlayer();
+            Vector2 target = stat.customTarget ? stat.aim : AimAtPlayer();
+            target.Normalize();
             WaveManager.instance.CreateBullet(this, stat.bulletColor,
-                this.transform.position, stat.bulletSize, target*stat.bulletSpeed);
+                this.transform.position, stat.bulletSize, target * stat.bulletSpeed);
         }
 
         protected Vector2 AimAtPlayer()

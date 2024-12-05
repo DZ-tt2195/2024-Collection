@@ -35,7 +35,7 @@ namespace Week1
         {
             instance = this;
 
-            endingText.transform.gameObject.SetActive(false);
+            endingText.transform.parent.gameObject.SetActive(false);
             listOfWaves = Resources.LoadAll<Wave>("Week1/Waves");
             listOfEnemies = Resources.LoadAll<EnemyStat>("Week1/Enemies");
 
@@ -123,8 +123,11 @@ namespace Week1
 
         public void EndGame(string text)
         {
-            endingText.transform.parent.gameObject.SetActive(true);
-            endingText.text = text;
+            if (!endingText.transform.parent.gameObject.activeSelf)
+            {
+                endingText.transform.parent.gameObject.SetActive(true);
+                endingText.text = text;
+            }
         }
     }
 }

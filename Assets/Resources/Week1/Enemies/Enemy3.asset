@@ -18,4 +18,4 @@ MonoBehaviour:
   customTarget: 0
   aim: {x: 0, y: 0}
   attackRate: 1.75
-  bulletSpeed: 2.5
+  bulletSpeed: 2

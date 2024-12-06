@@ -10,9 +10,10 @@ namespace Week1
         public void EnemySetup(EnemyStat stat)
         {
             this.stat = stat;
+            this.spriteRenderer.sprite = stat.sprite;
             this.spriteRenderer.color = stat.bulletColor;
             this.Setup(stat.health, 0f, "Enemy");
-            crossedOut = transform.GetChild(0).gameObject;
+            crossedOut = transform.GetChild(1).gameObject;
             crossedOut.SetActive(false);
             InvokeRepeating(nameof(ShootBullet), 1f, stat.attackRate);
         }
@@ -23,6 +24,15 @@ namespace Week1
             target.Normalize();
             WaveManager.instance.CreateBullet(this, stat.bulletColor,
                 this.transform.position, stat.bulletSize, target * stat.bulletSpeed);
+        }
+
+        private void Update()
+        {
+            if (!stat.customTarget)
+            {
+                Vector2 direction = AimAtPlayer();
+                spriteRenderer.transform.localEulerAngles = new(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg + 90);
+            }
         }
 
         protected Vector2 AimAtPlayer()

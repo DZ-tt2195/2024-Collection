@@ -16,7 +16,8 @@ namespace Week1
 
         protected virtual void Awake()
         {
-            spriteRenderer = GetComponent<SpriteRenderer>();
+            if (!TryGetComponent<SpriteRenderer>(out spriteRenderer))
+                spriteRenderer = this.transform.GetChild(0).GetComponent<SpriteRenderer>();
         }
 
         public virtual void Setup(int number, float immuneTime, string tag)

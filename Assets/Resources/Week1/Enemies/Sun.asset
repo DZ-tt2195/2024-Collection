@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a44101f2891e4a5387e9dbf6d5c2dd7, type: 3}
-  m_Name: Enemy3
+  m_Name: Sun
   m_EditorClassIdentifier: 
-  health: 3
-  bulletColor: {r: 0.5438597, g: 1, b: 0, a: 1}
-  bulletSize: {x: 1.5, y: 1.5}
+  sprite: {fileID: 21300000, guid: 085a6b7a86ea24ec1af172174b8ee2ff, type: 3}
+  health: 2
+  bulletColor: {r: 1, g: 0, b: 0, a: 1}
+  bulletSize: {x: 0.5, y: 0.5}
   customTarget: 0
   aim: {x: 0, y: 0}
-  attackRate: 1.5
-  bulletSpeed: 1
+  attackRate: 0.75
+  bulletSpeed: 1.5

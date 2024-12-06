@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a44101f2891e4a5387e9dbf6d5c2dd7, type: 3}
-  m_Name: Enemy4
+  m_Name: Crown
   m_EditorClassIdentifier: 
-  health: 4
-  bulletColor: {r: 0.62352943, g: 0.62352943, b: 0.62352943, a: 1}
-  bulletSize: {x: 1, y: 3.25}
-  customTarget: 1
-  aim: {x: 0, y: -1}
+  sprite: {fileID: -1378521658571115459, guid: 5849d5cb311144eae954336fff0096de, type: 3}
+  health: 3
+  bulletColor: {r: 0.5438597, g: 1, b: 0, a: 1}
+  bulletSize: {x: 1.5, y: 1.5}
+  customTarget: 0
+  aim: {x: 0, y: 0}
   attackRate: 1.5
-  bulletSpeed: 2.75
+  bulletSpeed: 1

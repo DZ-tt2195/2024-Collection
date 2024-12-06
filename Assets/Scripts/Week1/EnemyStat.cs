@@ -4,6 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewEnemyStat", menuName = "ScriptableObjects/EnemyStat")]
 public class EnemyStat : ScriptableObject
 {
+    public Sprite sprite;
     public int health;
     public Color bulletColor;
     public Vector2 bulletSize;

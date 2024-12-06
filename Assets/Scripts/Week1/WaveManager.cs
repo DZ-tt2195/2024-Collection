@@ -67,6 +67,10 @@ namespace Week1
             }
             catch
             {
+                Bullet[] bullets = FindObjectsByType<Bullet>(FindObjectsSortMode.None);
+                foreach (Bullet bullet in bullets)
+                    Destroy(bullet.gameObject);
+
                 EndGame("You Won!");
             }
         }

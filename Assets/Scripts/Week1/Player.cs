@@ -12,10 +12,14 @@ namespace Week1
         public static Player instance;
         public Camera mainCamera;
 
+        public static bool paused = false;
+        [SerializeField] GameObject pauseScreen;
+
         [SerializeField] Slider healthSlider;
         [SerializeField] TMP_Text healthCounter;
 
         int currentBullet = 5;
+        [SerializeField] Slider bulletSlider;
         [SerializeField] TMP_Text bulletCounter;
 
         float minX;
@@ -40,15 +44,23 @@ namespace Week1
 
         void Update()
         {
-            if (health > 0)
+            if (health > 0 && !paused)
             {
                 FollowMouse();
                 ShootBullet();
             }
 
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                paused = !paused;
+                pauseScreen.SetActive(paused);
+                Time.timeScale = (paused) ? 0f : 1f;
+            }
+
             healthSlider.value = health / 5f;
             healthCounter.text = $"Health: {health} / 5";
-            bulletCounter.text = $"Bullets: {currentBullet}";
+            bulletSlider.value = currentBullet / 5f;
+            bulletCounter.text = $"Bullets: {currentBullet} / 5";
         }
 
         void ShootBullet()
@@ -67,7 +79,7 @@ namespace Week1
 
             targetPosition.x = Mathf.Clamp(targetPosition.x, minX, maxX);
             targetPosition.y = Mathf.Clamp(targetPosition.y, minY, maxY);
-            transform.position = targetPosition;
+            transform.position = Vector3.Lerp(transform.position, targetPosition, 10f* Time.deltaTime);
         }
 
         protected override void DeathEffect()
@@ -86,7 +98,7 @@ namespace Week1
             else if (collision.TryGetComponent(out Resupply resupply))
             {
                 WaveManager.instance.ReturnResupply(resupply);
-                currentBullet += 2;
+                currentBullet = Mathf.Min(currentBullet+2, 5);
             }
         }
     }

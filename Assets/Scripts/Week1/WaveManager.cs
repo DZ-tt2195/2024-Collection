@@ -35,11 +35,10 @@ namespace Week1
         {
             instance = this;
 
-            endingText.transform.parent.gameObject.SetActive(false);
             listOfWaves = Resources.LoadAll<Wave>("Week1/Waves");
             listOfEnemies = Resources.LoadAll<EnemyStat>("Week1/Enemies");
 
-            InvokeRepeating(nameof(SpawnResupply), 0f, 3f);
+            InvokeRepeating(nameof(SpawnResupply), 1f, 2.5f);
             NewWave();
         }
 

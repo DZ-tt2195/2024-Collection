@@ -57,15 +57,15 @@ namespace Week1
 
         void NewWave()
         {
-            try
+            currentWave++;
+            if (currentWave < listOfWaves.Count())
             {
-                currentWave++;
                 foreach (Vector2 vector in listOfWaves[currentWave].enemySpawns)
                     CreateEnemy(vector, listOfEnemies[Random.Range(0, listOfEnemies.Length)]);
                 waveSlider.value = ((currentWave + 1) / (float)listOfWaves.Length);
                 waveCounter.text = $"Wave {currentWave + 1} / {listOfWaves.Length}";
             }
-            catch
+            else
             {
                 Bullet[] bullets = FindObjectsByType<Bullet>(FindObjectsSortMode.None);
                 foreach (Bullet bullet in bullets)

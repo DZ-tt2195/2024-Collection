@@ -151,6 +151,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 2393779583214189913, guid: eb859b6292cf7433f8c8959d963635e7, type: 3}
   flagPrefab: {fileID: 8906000764831480374, guid: bda79f628c05f4742a8d20d8416e7b40, type: 3}
   wallPrefab: {fileID: 1983906471464655463, guid: 00eb4f1b707df446faaf186b9a5fad9b, type: 3}
+  starPrefab: {fileID: 7897970838405609336, guid: 75714a789f962410ab87d90f703a9fd5, type: 3}
 --- !u!4 &152605431
 Transform:
   m_ObjectHideFlags: 0
@@ -252,7 +253,7 @@ Transform:
   m_GameObject: {fileID: 1219675232}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.5, y: 4, z: -10}
+  m_LocalPosition: {x: 7, y: 4, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

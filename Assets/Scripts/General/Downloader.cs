@@ -49,7 +49,7 @@ public class Downloader : MonoBehaviour
         IEnumerator DownloadLevels(int number)
         {
             string folder = $"Week2/";
-            string range = $"Level {number}";
+            string range = $"W2 - Level {number}";
 
             yield return Download(folder, range);
             try
@@ -78,7 +78,7 @@ public class Downloader : MonoBehaviour
 
     BoardData ReadMapData(string name, string[][] data)
     {
-        string[,] toReturn = new string[16, 9];
+        string[,] toReturn = new string[15, 8];
 
         for (int i = 0; i < data[1].Length; i++)
             data[1][i].Trim().Replace("\"", "");
@@ -88,7 +88,6 @@ public class Downloader : MonoBehaviour
             for (int j = 0; j < data[i].Length; j++)
             {
                 string nextObject = data[i][j].Replace("\"", "").Replace("\\", "").Replace("]", "").Trim();
-                Debug.Log(nextObject);
                 toReturn[j, i-1] = nextObject;
             }
         }

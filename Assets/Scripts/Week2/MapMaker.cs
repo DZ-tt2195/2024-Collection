@@ -4,6 +4,18 @@ using UnityEngine;
 using System.Linq;
 using System.Collections;
 
+public class StoreStar
+{
+    public GameObject starObject;
+    public Vector2Int starPosition;
+
+    public StoreStar(GameObject starObject, Vector2Int starPosition)
+    {
+        this.starObject = starObject;
+        this.starPosition = starPosition;
+    }
+}
+
 namespace Week2
 {
     enum Slot { Blank, Star, Wall, Player, Death, Bounce, End }
@@ -16,12 +28,16 @@ namespace Week2
         [SerializeField] GameObject playerPrefab;
         [SerializeField] GameObject flagPrefab;
         [SerializeField] GameObject wallPrefab;
+        [SerializeField] GameObject starPrefab;
 
         bool canMove;
 
-        HashSet<Vector2Int> starLocations = new();
+        HashSet<StoreStar> starLocations = new();
         List<List<Vector2Int>> solutions = new();
         List<Vector2Int> directions = new() { new(1, 0), new(-1, 0), new(0, -1), new(0, 1) };
+
+        HashSet<Vector2Int> playerStars = new();
+        List<Vector2Int> playerPath = new();
 
         void Start()
         {
@@ -44,6 +60,12 @@ namespace Week2
                                 GameObject newWall = Instantiate(wallPrefab);
                                 newWall.transform.position = new(i, j);
                                 listOfSlots[i, j] = Slot.Wall;
+                                break;
+                            case "Star":
+                                GameObject newStar = Instantiate(starPrefab);
+                                newStar.transform.position = new(i, j);
+                                listOfSlots[i, j] = Slot.Star;
+                                starLocations.Add(new(newStar, new(i, j)));
                                 break;
                             case "Player":
                                 player = Instantiate(playerPrefab);
@@ -90,23 +112,23 @@ namespace Week2
 
                 if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
                 {
-                    Debug.Log("go up");
-                    StartCoroutine(Iteration(new(), new() { playerPosition }, new(0, 1), false));
+                    playerPath.Add(playerPosition);
+                    StartCoroutine(Iteration(playerStars, playerPath, new(0, 1), false));
                 }
                 else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
                 {
-                    Debug.Log("go down");
-                    StartCoroutine(Iteration(new(), new() { playerPosition }, new(0, -1), false));
+                    playerPath.Add(playerPosition);
+                    StartCoroutine(Iteration(playerStars, playerPath, new(0, -1), false));
                 }
                 else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
                 {
-                    Debug.Log("go left");
-                    StartCoroutine(Iteration(new(), new() { playerPosition }, new(-1, 0), false));
+                    playerPath.Add(playerPosition);
+                    StartCoroutine(Iteration(playerStars, playerPath, new(-1, 0), false));
                 }
                 else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
                 {
-                    Debug.Log("go right");
-                    StartCoroutine(Iteration(new(), new() { playerPosition }, new(1, 0), false));
+                    playerPath.Add(playerPosition);
+                    StartCoroutine(Iteration(playerStars, playerPath, new(1, 0), false));
                 }
             }
         }
@@ -116,9 +138,23 @@ namespace Week2
             Vector2Int startPosition = currentPath[^1];
             Vector2Int currentPosition = startPosition;
             canMove = false;
+            int gainedStars = 0;
 
             while (true)
             {
+                bool AllStarsDone()
+                {
+                    foreach (StoreStar next in starLocations)
+                    {
+                        if (!starsCollected.Contains(next.starPosition))
+                        {
+                            Debug.Log("didn't collect all stars");
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+
                 if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.End && AllStarsDone())
                 {
                     if (simulated)
@@ -126,6 +162,10 @@ namespace Week2
                         List<Vector2Int> newList = new(currentPath) { currentPosition };
                         solutions.Add(newList);
                         yield break;
+                    }
+                    else
+                    {
+                        Debug.Log("victory");
                     }
                 }
                 else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Death)
@@ -135,18 +175,21 @@ namespace Week2
                         yield break;
                     }
                 }
-
-                bool AllStarsDone()
+                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Star)
                 {
-                    foreach (Vector2Int next in starLocations)
+                    if (!starsCollected.Contains(currentPosition))
                     {
-                        if (!starsCollected.Contains(next))
+                        StoreStar target = starLocations.FirstOrDefault(next => next.starPosition.Equals(currentPosition));
+
+                        if (!starsCollected.Contains(currentPosition))
                         {
-                            Debug.Log("didn't collect all stars");
-                            return false;
+                            starsCollected.Add(currentPosition);
+                            if (simulated)
+                                gainedStars++;
+                            else
+                                target.starObject.SetActive(false);
                         }
                     }
-                    return true;
                 }
 
                 Vector2Int nextPosition = currentPosition + movement;
@@ -173,13 +216,14 @@ namespace Week2
             }
 
             List<Vector2Int> newPath = new(currentPath) { currentPosition };
-            if (simulated && newPath.Count <= 10 && currentPosition != startPosition)
+            if (simulated && newPath.Count < 10 && (currentPosition != startPosition || gainedStars > 0))
             {
                 foreach (Vector2Int next in directions)
                     StartCoroutine(Iteration(starsCollected, newPath, next, simulated));
             }
             else if (!simulated)
             {
+                playerStars = starsCollected;
                 canMove = true;
             }
         }

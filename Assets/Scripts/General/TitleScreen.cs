@@ -13,7 +13,7 @@ public class TitleScreen : MonoBehaviour
         {
             string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
             string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
-            Debug.Log($"Scene {i}: {sceneName}");
+            //Debug.Log($"Scene {i}: {sceneName}");
         }
     }
 }

@@ -48,51 +48,54 @@ public class Downloader : MonoBehaviour
 
         IEnumerator DownloadLevels(int number)
         {
-            string folder = $"Week2/";
+            string folder = $"Week2";
             string range = $"W2 - Level {number}";
 
             yield return Download(folder, range);
             try
             {
-                puzzleLevels.Add(ReadMapData(range, ReadFile($"{folder}{range}")));
+                puzzleLevels.Add(ReadMapData(folder, range));
                 StartCoroutine(DownloadLevels(number + 1));
-            } catch { }
+            }
+            catch { }
         }
     }
 
-    string[][] ReadFile(string range)
+    BoardData ReadMapData(string folder, string range)
     {
-        TextAsset data = Resources.Load($"{range}") as TextAsset;
+        string toLoad = $"{folder}/{range}";
+        TextAsset data = Resources.Load(toLoad) as TextAsset;
 
         string editData = data.text;
         editData = editData.Replace("],", "").Replace("{", "").Replace("}", "");
 
-        string[] numLines = editData.Split("[");
-        string[][] list = new string[numLines.Length][];
+        string[] numRows = editData.Split("[");
+        string[][] list = new string[numRows.Length][];
+        int maxCol = 0;
 
-        for (int i = 0; i < numLines.Length; i++)
-            list[i] = numLines[i].Split("\",");
-        
-        return list;
-    }
-
-    BoardData ReadMapData(string name, string[][] data)
-    {
-        string[,] toReturn = new string[15, 8];
-
-        for (int i = 0; i < data[1].Length; i++)
-            data[1][i].Trim().Replace("\"", "");
-
-        for (int i = 1; i < data.Length; i++)
+        for (int i = 0; i < numRows.Length; i++)
         {
-            for (int j = 0; j < data[i].Length; j++)
-            {
-                string nextObject = data[i][j].Replace("\"", "").Replace("\\", "").Replace("]", "").Trim();
-                toReturn[j, i-1] = nextObject;
-            }
+            list[i] = numRows[i].Split("\",");
+            if (list[i].Length > maxCol)
+                maxCol = list[i].Length;
         }
 
-        return new BoardData(name, toReturn);
+        string[,] grid = new string[numRows.Length, maxCol];
+        for (int x = 0; x < numRows.Length; x++)
+        {
+            for (int y = 0; y < maxCol; y++)
+            {
+                try
+                {
+                    grid[x - 1, y] = list[x][y].Trim().Replace("\"", "").Replace("]", "");
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    continue;
+                }
+            }
+        }
+        return new BoardData(range, grid);
     }
 
     IEnumerator Download(string folder, string range)
@@ -109,7 +112,7 @@ public class Downloader : MonoBehaviour
             }
             else
             {
-                string filePath = $"Assets/Resources/{folder}{range}.txt";
+                string filePath = $"Assets/Resources/{folder}/{range}.txt";
                 File.WriteAllText($"{filePath}", www.downloadHandler.text);
 
                 string[] allLines = File.ReadAllLines($"{filePath}");

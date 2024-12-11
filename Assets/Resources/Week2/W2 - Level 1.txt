@@ -30,7 +30,7 @@
       "Wall",
       "Star",
       "",
-      "",
+      "Left",
       "Death",
       "Flag",
       "Wall"

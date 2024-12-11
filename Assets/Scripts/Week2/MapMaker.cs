@@ -21,16 +21,20 @@ public class StoreStar
 
 namespace Week2
 {
-    enum Slot { Blank, Star, Wall, Player, Death, Bounce, End }
+    enum Slot { Blank, Star, Wall, Player, Death, End, Left, Right, Up, Down }
 
     public class MapMaker : MonoBehaviour
     {
+
+#region Variables
+
         [Foldout("Prefabs", true)]
         [SerializeField] GameObject playerPrefab;
         [SerializeField] GameObject flagPrefab;
         [SerializeField] GameObject wallPrefab;
         [SerializeField] GameObject starPrefab;
         [SerializeField] GameObject deathPrefab;
+        [SerializeField] GameObject arrowPrefab;
 
         [Foldout("UI", true)]
         [SerializeField] Slider starSlider; 
@@ -38,7 +42,6 @@ namespace Week2
 
         [Foldout("Brute force", true)]
         Slot[,] listOfSlots;
-        [SerializeField] Transform storeTiles;
         HashSet<StoreStar> starLocations = new();
         List<List<Vector2Int>> solutions = new();
         List<Vector2Int> directions = new() { new(1, 0), new(-1, 0), new(0, -1), new(0, 1) };
@@ -48,6 +51,10 @@ namespace Week2
         GameObject player;
         HashSet<Vector2Int> playerStars = new();
         List<Vector2Int> playerPath = new();
+
+        #endregion
+
+#region Setup
 
         void Start()
         {
@@ -71,34 +78,53 @@ namespace Week2
                         {
                             case "Death":
                                 GameObject newDeath = Instantiate(deathPrefab);
-                                newDeath.transform.SetParent(storeTiles);
                                 newDeath.transform.position = new(i, j);
                                 listOfSlots[i, j] = Slot.Death;
                                 break;
                             case "Wall":
                                 GameObject newWall = Instantiate(wallPrefab);
-                                newWall.transform.SetParent(storeTiles);
                                 newWall.transform.position = new(i, j);
                                 listOfSlots[i, j] = Slot.Wall;
                                 break;
                             case "Star":
                                 GameObject newStar = Instantiate(starPrefab);
-                                newStar.transform.SetParent(storeTiles);
                                 newStar.transform.position = new(i, j);
                                 listOfSlots[i, j] = Slot.Star;
                                 starLocations.Add(new(newStar, new(i, j)));
                                 break;
                             case "Player":
                                 player = Instantiate(playerPrefab);
-                                player.transform.SetParent(storeTiles);
                                 player.transform.position = new(i, j);
                                 listOfSlots[i, j] = Slot.Player;
                                 break;
                             case "Flag":
                                 GameObject newFlag = Instantiate(flagPrefab);
-                                newFlag.transform.SetParent(storeTiles);
                                 newFlag.transform.position = new(i, j);
                                 listOfSlots[i, j] = Slot.End;
+                                break;
+                            case "Left":
+                                GameObject leftArrow = Instantiate(arrowPrefab);
+                                leftArrow.transform.position = new(i, j);
+                                leftArrow.transform.localEulerAngles = new(0, 0, 180);
+                                listOfSlots[i, j] = Slot.Left;
+                                break;
+                            case "Right":
+                                GameObject rightArrow = Instantiate(arrowPrefab);
+                                rightArrow.transform.position = new(i, j);
+                                rightArrow.transform.localEulerAngles = new(0, 0, 0);
+                                listOfSlots[i, j] = Slot.Right;
+                                break;
+                            case "Down":
+                                GameObject downArrow = Instantiate(arrowPrefab);
+                                downArrow.transform.position = new(i, j);
+                                downArrow.transform.localEulerAngles = new(0, 0, 270);
+                                listOfSlots[i, j] = Slot.Down;
+                                break;
+                            case "Up":
+                                GameObject upArrow = Instantiate(arrowPrefab);
+                                upArrow.transform.position = new(i, j);
+                                upArrow.transform.localEulerAngles = new(0, 0, 90);
+                                listOfSlots[i, j] = Slot.Up;
                                 break;
                             default:
                                 break;
@@ -129,6 +155,10 @@ namespace Week2
                 }
             }
         }
+
+        #endregion
+
+#region Gameplay
 
         private void Update()
         {
@@ -163,6 +193,7 @@ namespace Week2
         {
             Vector2Int startPosition = currentPath[^1];
             Vector2Int currentPosition = startPosition;
+            Vector2Int currentDirection = movement;
             canMove = false;
             int gainedStars = 0;
 
@@ -172,17 +203,9 @@ namespace Week2
                 {
                     foreach (StoreStar next in starLocations)
                     {
-                        if (starsCollected.Contains(next.starPosition))
-                        {
-                            Debug.Log(next.starPosition);
-                        }
                         if (!starsCollected.Contains(next.starPosition))
-                        {
-                            Debug.Log("didn't collect all stars");
                             return false;
-                        }
                     }
-                    Debug.Log("collected all stars");
                     return true;
                 }
 
@@ -201,24 +224,18 @@ namespace Week2
                 }
                 else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Death)
                 {
-                    if (simulated)
-                    {
-                        yield break;
-                    }
-                    else
-                    {
+                    if (!simulated)
                         Debug.Log("you lost");
-                        yield break;
-                    }
+                    yield break;
                 }
                 else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Star)
                 {
                     if (!starsCollected.Contains(currentPosition))
                     {
                         StoreStar target = starLocations.FirstOrDefault(next => next.starPosition.Equals(currentPosition));
-
                         starsCollected.Add(currentPosition);
                         gainedStars++;
+
                         if (!simulated)
                         {
                             target.starObject.SetActive(false);
@@ -227,8 +244,24 @@ namespace Week2
                         }
                     }
                 }
+                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Up)
+                {
+                    currentDirection = new(0, 1);
+                }
+                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Down)
+                {
+                    currentDirection = new(0, -1);
+                }
+                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Left)
+                {
+                    currentDirection = new(-1, 0);
+                }
+                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Right)
+                {
+                    currentDirection = new(1, 0);
+                }
 
-                Vector2Int nextPosition = currentPosition + movement;
+                Vector2Int nextPosition = currentPosition + currentDirection;
                 if (listOfSlots[nextPosition.x, nextPosition.y] == Slot.Wall)
                     break;
 
@@ -274,4 +307,7 @@ namespace Week2
             }
         }
     }
+
+    #endregion
+
 }

@@ -289,9 +289,9 @@ MonoBehaviour:
   wallPrefab: {fileID: 1983906471464655463, guid: 00eb4f1b707df446faaf186b9a5fad9b, type: 3}
   starPrefab: {fileID: 7897970838405609336, guid: 75714a789f962410ab87d90f703a9fd5, type: 3}
   deathPrefab: {fileID: 4913931701850613414, guid: 4e52b9935a124406ab05951654906999, type: 3}
+  arrowPrefab: {fileID: 2720501743870289084, guid: a2a87400a35c9445b92804dd91247093, type: 3}
   starSlider: {fileID: 1817826286}
   starText: {fileID: 1688890025}
-  storeTiles: {fileID: 917097314}
 --- !u!4 &152605431
 Transform:
   m_ObjectHideFlags: 0
@@ -496,37 +496,6 @@ MonoBehaviour:
   Active: 0
   TargetObject: {fileID: 883056266}
   TargetComponent: {fileID: 0}
---- !u!1 &917097313
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 917097314}
-  m_Layer: 0
-  m_Name: Store Tiles
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &917097314
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 917097313}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &955492178
 GameObject:
   m_ObjectHideFlags: 0
@@ -1548,4 +1517,3 @@ SceneRoots:
   - {fileID: 1219675235}
   - {fileID: 152605431}
   - {fileID: 1740721564}
-  - {fileID: 917097314}

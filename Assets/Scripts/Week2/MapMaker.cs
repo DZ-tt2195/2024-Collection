@@ -39,6 +39,7 @@ namespace Week2
         [Foldout("UI", true)]
         [SerializeField] Slider starSlider; 
         [SerializeField] TMP_Text starText;
+        [SerializeField] TMP_Text endText;
 
         [Foldout("Brute force", true)]
         Slot[,] listOfSlots;
@@ -64,7 +65,7 @@ namespace Week2
 
             void CreateBoard()
             {
-                BoardData data = Downloader.instance.puzzleLevels[0];
+                BoardData data = Downloader.instance.puzzleLevels[PlayerPrefs.GetInt("Puzzle Level")];
                 listOfSlots = new Slot[data.terrain.GetLength(0), data.terrain.GetLength(1)];
 
                 for (int i = 0; i < data.terrain.GetLength(0); i++)
@@ -219,13 +220,18 @@ namespace Week2
                     }
                     else
                     {
-                        Debug.Log("victory");
+                        endText.transform.parent.gameObject.SetActive(true);
+                        endText.text = "You Win!";
+                        yield break;
                     }
                 }
                 else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Death)
                 {
                     if (!simulated)
-                        Debug.Log("you lost");
+                    {
+                        endText.transform.parent.gameObject.SetActive(true);
+                        endText.text = "You Lost.";
+                    }
                     yield break;
                 }
                 else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Star)

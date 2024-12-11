@@ -30,9 +30,18 @@
       "Wall",
       "Star",
       "",
-      "",
-      "Death",
       "Flag",
+      "",
+      "Down",
+      "Wall"
+    ],
+    [
+      "Wall",
+      "",
+      "",
+      "",
+      "",
+      "Star",
       "Wall"
     ],
     [

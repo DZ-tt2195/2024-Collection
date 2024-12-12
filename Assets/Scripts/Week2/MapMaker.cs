@@ -21,7 +21,7 @@ public class StoreStar
 
 namespace Week2
 {
-    enum Slot { Blank, Star, Wall, Player, Death, End, Left, Right, Up, Down }
+    enum Slot { Blank, Star, Wall, Player, Death, End, Left, Right, Up, Down, Stop }
 
     public class MapMaker : MonoBehaviour
     {
@@ -35,11 +35,14 @@ namespace Week2
         [SerializeField] GameObject starPrefab;
         [SerializeField] GameObject deathPrefab;
         [SerializeField] GameObject arrowPrefab;
+        [SerializeField] GameObject stopPrefab;
 
         [Foldout("UI", true)]
         [SerializeField] Slider starSlider; 
         [SerializeField] TMP_Text starText;
         [SerializeField] TMP_Text endText;
+        [SerializeField] TMP_Text moveCounter;
+        [SerializeField] TMP_Text minimumMoves;
 
         [Foldout("Brute force", true)]
         Slot[,] listOfSlots;
@@ -59,6 +62,7 @@ namespace Week2
 
         void Start()
         {
+            moveCounter.text = $"Moves: 0";
             CreateBoard();
             SimulateBoard();
             canMove = true;
@@ -81,6 +85,11 @@ namespace Week2
                                 GameObject newDeath = Instantiate(deathPrefab);
                                 newDeath.transform.position = new(i, j);
                                 listOfSlots[i, j] = Slot.Death;
+                                break;
+                            case "Stop":
+                                GameObject newStop = Instantiate(stopPrefab);
+                                newStop.transform.position = new(i, j);
+                                listOfSlots[i, j] = Slot.Stop;
                                 break;
                             case "Wall":
                                 GameObject newWall = Instantiate(wallPrefab);
@@ -148,11 +157,13 @@ namespace Week2
                     string solution = "";
                     for (int i = 1; i < shortestList.Count; i++)
                         solution += $"{shortestList[i]}, ";
-                    Debug.Log($"Shortest Path Found ({shortestList.Count-1}) : {solution}");
+                    Debug.Log(solution);
+                    minimumMoves.text = $"Minimum Moves: {shortestList.Count - 1}";
                 }
                 else
                 {
                     Debug.Log("Puzzle impossible.");
+                    minimumMoves.text = $"Minimum Moves: X";
                 }
             }
         }
@@ -170,21 +181,25 @@ namespace Week2
                 if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
                 {
                     playerPath.Add(playerPosition);
+                    moveCounter.text = $"Moves: {playerPath.Count}";
                     StartCoroutine(Iteration(playerStars, playerPath, new(0, 1), false));
                 }
                 else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
                 {
                     playerPath.Add(playerPosition);
+                    moveCounter.text = $"Moves: {playerPath.Count}";
                     StartCoroutine(Iteration(playerStars, playerPath, new(0, -1), false));
                 }
                 else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
                 {
                     playerPath.Add(playerPosition);
+                    moveCounter.text = $"Moves: {playerPath.Count}";
                     StartCoroutine(Iteration(playerStars, playerPath, new(-1, 0), false));
                 }
                 else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
                 {
                     playerPath.Add(playerPosition);
+                    moveCounter.text = $"Moves: {playerPath.Count}";
                     StartCoroutine(Iteration(playerStars, playerPath, new(1, 0), false));
                 }
             }
@@ -274,6 +289,9 @@ namespace Week2
                 if (!simulated)
                     yield return MovePlayer(currentPosition, nextPosition);
                 currentPosition = nextPosition;
+
+                if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Stop)
+                    break;
 
                 IEnumerator MovePlayer(Vector2 playerStart, Vector2 playerEnd)
                 {

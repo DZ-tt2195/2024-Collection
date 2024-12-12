@@ -5,38 +5,41 @@
       "Wall",
       "Wall",
       "Wall",
-      "Wall",
       "Wall"
     ],
     [
       "Wall",
       "Player",
       "",
-      "",
-      "",
-      "",
+      "Stop",
+      "Right",
       "Wall"
     ],
     [
       "Wall",
       "Star",
       "",
-      "Flag",
       "",
       "Down",
       "Wall"
     ],
     [
       "Wall",
-      "",
-      "",
-      "",
-      "",
       "Star",
+      "",
+      "",
+      "",
       "Wall"
     ],
     [
       "Wall",
+      "Death",
+      "",
+      "",
+      "Flag",
+      "Wall"
+    ],
+    [
       "Wall",
       "Wall",
       "Wall",

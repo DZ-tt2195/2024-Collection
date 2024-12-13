@@ -21,7 +21,7 @@ public class StoreStar
 
 namespace Week2
 {
-    enum Slot { Blank, Star, Wall, Player, Death, End, Left, Right, Up, Down, Stop }
+    enum Slot { Blank, Star, Wall, Player, Death, Flag, Left, Right, Up, Down, Stop }
 
     public class MapMaker : MonoBehaviour
     {
@@ -110,7 +110,7 @@ namespace Week2
                             case "Flag":
                                 GameObject newFlag = Instantiate(flagPrefab);
                                 newFlag.transform.position = new(i, j);
-                                listOfSlots[i, j] = Slot.End;
+                                listOfSlots[i, j] = Slot.Flag;
                                 break;
                             case "Left":
                                 GameObject leftArrow = Instantiate(arrowPrefab);
@@ -210,76 +210,61 @@ namespace Week2
             Vector2Int startPosition = currentPath[^1];
             Vector2Int currentPosition = startPosition;
             Vector2Int currentDirection = movement;
+
             canMove = false;
-            int gainedStars = 0;
+            List<Vector2Int> routeStar = new();
 
             while (true)
             {
-                bool AllStarsDone()
+                switch (listOfSlots[currentPosition.x, currentPosition.y])
                 {
-                    foreach (StoreStar next in starLocations)
-                    {
-                        if (!starsCollected.Contains(next.starPosition))
-                            return false;
-                    }
-                    return true;
-                }
-
-                if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.End && AllStarsDone())
-                {
-                    if (simulated)
-                    {
-                        List<Vector2Int> newList = new(currentPath) { currentPosition };
-                        solutions.Add(newList);
-                        yield break;
-                    }
-                    else
-                    {
-                        endText.transform.parent.gameObject.SetActive(true);
-                        endText.text = "You Win!";
-                        yield break;
-                    }
-                }
-                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Death)
-                {
-                    if (!simulated)
-                    {
-                        endText.transform.parent.gameObject.SetActive(true);
-                        endText.text = "You Lost.";
-                    }
-                    yield break;
-                }
-                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Star)
-                {
-                    if (!starsCollected.Contains(currentPosition))
-                    {
-                        StoreStar target = starLocations.FirstOrDefault(next => next.starPosition.Equals(currentPosition));
-                        starsCollected.Add(currentPosition);
-                        gainedStars++;
-
+                    case Slot.Flag:
+                        if (starsCollected.Count == starLocations.Count)
+                        {
+                            if (simulated)
+                            {
+                                List<Vector2Int> newList = new(currentPath) { currentPosition };
+                                solutions.Add(newList);
+                            }
+                            else
+                            {
+                                endText.transform.parent.gameObject.SetActive(true);
+                                endText.text = "You Win!";
+                            }
+                            yield break;
+                        }
+                        break;
+                    case Slot.Death:
                         if (!simulated)
                         {
-                            target.starObject.SetActive(false);
-                            starSlider.value = (float)starsCollected.Count / starLocations.Count;
-                            starText.text = $"Stars: {starsCollected.Count}/{starLocations.Count}";
+                            endText.transform.parent.gameObject.SetActive(true);
+                            endText.text = "You Lost.";
                         }
-                    }
-                }
-                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Up)
-                {
-                    currentDirection = new(0, 1);
-                }
-                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Down)
-                {
-                    currentDirection = new(0, -1);
-                }
-                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Left)
-                {
-                    currentDirection = new(-1, 0);
-                }
-                else if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Right)
-                {
-                    currentDirection = new(1, 0);
+                        yield break;
+                    case Slot.Star:
+                        if (!starsCollected.Contains(currentPosition) && !routeStar.Contains(currentPosition))
+                        {
+                            StoreStar target = starLocations.FirstOrDefault(next => next.starPosition.Equals(currentPosition));
+                            routeStar.Add(new(target.starPosition.x, target.starPosition.y));
+
+                            if (!simulated)
+                                target.starObject.SetActive(false);
+                        }
+                        break;
+                    case Slot.Up:
+                        currentDirection = new(0, 1);
+                        break;
+                    case Slot.Down:
+                        currentDirection = new(0, -1);
+                        break;
+                    case Slot.Right:
+                        currentDirection = new(1, 0);
+                        break;
+                    case Slot.Left:
+                        currentDirection = new(-1, 0);
+                        break;
+                    default:
+                        break;
                 }
 
                 Vector2Int nextPosition = currentPosition + currentDirection;
@@ -287,12 +272,9 @@ namespace Week2
                     break;
 
                 if (!simulated)
+                {
                     yield return MovePlayer(currentPosition, nextPosition);
-                currentPosition = nextPosition;
-
-                if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Stop)
-                    break;
-
+                }
                 IEnumerator MovePlayer(Vector2 playerStart, Vector2 playerEnd)
                 {
                     float elapsedTime = 0f;
@@ -305,20 +287,19 @@ namespace Week2
                     }
                     player.transform.position = playerEnd;
                 }
+
+                currentPosition = nextPosition;
+
+                if (listOfSlots[currentPosition.x, currentPosition.y] == Slot.Stop)
+                    break;
             }
 
-            List<Vector2Int> newPath = new();
-            foreach (Vector2Int next in currentPath)
-                newPath.Add(next);
-            newPath.Add(currentPosition);
+            List<Vector2Int> newPath = new(currentPath) { currentPosition };
+            HashSet<Vector2Int> newStars = new(starsCollected.Union(routeStar));
 
-            HashSet<Vector2Int> newStars = new();
-            foreach (Vector2Int next in starsCollected)
-                newStars.Add(next);
-
-            if (simulated && newPath.Count < 10)
+            if (simulated && newPath.Count < 15)
             {
-                if (currentPosition != startPosition || gainedStars > 0)
+                if (currentPosition != startPosition || routeStar.Count > 0)
                 {
                     foreach (Vector2Int next in directions)
                         StartCoroutine(Iteration(newStars, newPath, next, simulated));
@@ -326,6 +307,9 @@ namespace Week2
             }
             else if (!simulated)
             {
+                starSlider.value = (float)newStars.Count / starLocations.Count;
+                starText.text = $"Stars: {newStars.Count}/{starLocations.Count}";
+
                 playerStars = newStars;
                 canMove = true;
             }

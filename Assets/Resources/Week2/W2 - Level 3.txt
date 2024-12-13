@@ -4,14 +4,12 @@
       "Wall",
       "Wall",
       "Wall",
-      "Wall",
       "Wall"
     ],
     [
       "Wall",
       "Player",
       "",
-      "Stop",
       "Right",
       "Wall"
     ],
@@ -20,27 +18,23 @@
       "Star",
       "",
       "",
-      "Down",
       "Wall"
     ],
     [
       "Wall",
       "Star",
       "",
-      "",
-      "",
+      "Stop",
       "Wall"
     ],
     [
       "Wall",
       "Death",
       "",
-      "",
       "Flag",
       "Wall"
     ],
     [
-      "Wall",
       "Wall",
       "Wall",
       "Wall",

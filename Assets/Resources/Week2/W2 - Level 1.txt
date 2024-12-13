@@ -5,7 +5,6 @@
       "Wall",
       "Wall",
       "Wall",
-      "Wall",
       "Wall"
     ],
     [
@@ -14,29 +13,25 @@
       "",
       "",
       "",
-      "",
       "Wall"
     ],
     [
       "Wall",
       "",
-      "",
-      "",
-      "",
+      "Wall",
+      "Wall",
       "",
       "Wall"
     ],
     [
       "Wall",
       "Star",
-      "",
-      "",
-      "Death",
+      "Wall",
+      "Wall",
       "Flag",
       "Wall"
     ],
     [
-      "Wall",
       "Wall",
       "Wall",
       "Wall",

@@ -758,6 +758,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf964fbc5c834723bbdd9dd393313e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  puzzleLevels: []
 --- !u!4 &1522177877
 Transform:
   m_ObjectHideFlags: 0

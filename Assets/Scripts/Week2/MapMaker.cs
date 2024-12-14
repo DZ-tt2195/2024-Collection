@@ -219,19 +219,23 @@ namespace Week2
                 switch (listOfSlots[currentPosition.x, currentPosition.y])
                 {
                     case Slot.Flag:
-                        if (starsCollected.Count == starLocations.Count)
+                        if (simulated)
                         {
-                            if (simulated)
+                            if (starsCollected.Count == starLocations.Count)
                             {
                                 List<Vector2Int> newList = new(currentPath) { currentPosition };
                                 solutions.Add(newList);
+                                yield break;
                             }
-                            else
+                        }
+                        else
+                        {
+                            if (starsCollected.Count + routeStar.Count == starLocations.Count)
                             {
                                 endText.transform.parent.gameObject.SetActive(true);
                                 endText.text = "You Win!";
+                                yield break;
                             }
-                            yield break;
                         }
                         break;
                     case Slot.Death:
@@ -248,7 +252,11 @@ namespace Week2
                             routeStar.Add(new(target.starPosition.x, target.starPosition.y));
 
                             if (!simulated)
+                            {
+                                starSlider.value = (float)(starsCollected.Count + routeStar.Count) / starLocations.Count;
+                                starText.text = $"Stars: {starsCollected.Count + routeStar.Count}/{starLocations.Count}";
                                 target.starObject.SetActive(false);
+                            }
                         }
                         break;
                     case Slot.Up:
@@ -297,7 +305,7 @@ namespace Week2
             List<Vector2Int> newPath = new(currentPath) { currentPosition };
             HashSet<Vector2Int> newStars = new(starsCollected.Union(routeStar));
 
-            if (simulated && newPath.Count < 15)
+            if (simulated && newPath.Count <= 10)
             {
                 if (currentPosition != startPosition || routeStar.Count > 0)
                 {

@@ -11,72 +11,92 @@
     ],
     [
       "Wall",
-      "Up",
-      "Star",
-      "",
-      "",
-      "",
-      "",
-      "Wall"
-    ],
-    [
+      "Death",
       "Wall",
       "Wall",
-      "Wall",
-      "Wall",
-      "Wall",
-      "",
-      "",
-      "Wall"
-    ],
-    [
       "Wall",
       "Up",
-      "",
-      "",
-      "Right",
-      "",
-      "",
-      "Wall"
-    ],
-    [
-      "Wall",
-      "Star",
-      "",
-      "Down",
-      "Right",
-      "",
-      "",
-      "Wall"
-    ],
-    [
-      "Wall",
-      "",
-      "Right",
-      "Player",
       "Flag",
+      "Wall"
+    ],
+    [
+      "Wall",
+      "Star",
+      "",
+      "",
+      "Stop",
+      "Left",
+      "Player",
+      "Wall"
+    ],
+    [
+      "Wall",
+      "",
+      "Wall",
+      "",
+      "",
+      "",
+      "",
+      "Wall"
+    ],
+    [
+      "Wall",
+      "",
+      "Wall",
+      "Wall",
+      "",
+      "Stop",
+      "",
+      "Wall"
+    ],
+    [
+      "Wall",
+      "",
+      "Up",
+      "",
+      "",
+      "Left",
+      "Down",
+      "Wall"
+    ],
+    [
+      "Wall",
+      "",
+      "",
+      "Wall",
+      "Star",
+      "Wall",
+      "Wall",
+      "Wall"
+    ],
+    [
+      "Wall",
+      "",
+      "Stop",
+      "",
+      "",
+      "",
+      "Right",
+      "Wall"
+    ],
+    [
+      "Wall",
+      "Star",
+      "",
+      "",
+      "Stop",
+      "Death",
+      "Star",
+      "Wall"
+    ],
+    [
+      "Wall",
+      "Up",
       "Left",
       "",
-      "Wall"
-    ],
-    [
-      "Wall",
+      "Down",
       "",
-      "",
-      "Up",
-      "Right",
-      "",
-      "",
-      "Wall"
-    ],
-    [
-      "Wall",
-      "",
-      "Star",
-      "",
-      "Star",
-      "",
-      "",
+      "Down",
       "Wall"
     ],
     [

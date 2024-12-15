@@ -25,8 +25,26 @@ namespace Week2
 
     public class MapMaker : MonoBehaviour
     {
+        /*
+        void OnEnable()
+        {
+            Application.logMessageReceived += DebugMessages;
+        }
+
+        void OnDisable()
+        {
+            Application.logMessageReceived -= DebugMessages;
+        }
+
+        void DebugMessages(string logString, string stackTrace, LogType type)
+        {
+                debugText.text += ($"{logString} | {stackTrace}\n");
+        }
+        */
 
 #region Variables
+
+        [SerializeField] TMP_Text debugText;
 
         [Foldout("Prefabs", true)]
         [SerializeField] GameObject playerPrefab;
@@ -63,6 +81,7 @@ namespace Week2
         void Start()
         {
             moveCounter.text = $"Moves: 0";
+
             CreateBoard();
             SimulateBoard();
             canMove = true;

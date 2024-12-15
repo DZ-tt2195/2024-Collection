@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
 using MyBox;
+using TMPro;
 
 [Serializable]
 public class BoardData
@@ -52,12 +53,12 @@ public class Downloader : MonoBehaviour
             string range = $"W2 - Level {number}";
 
             yield return Download(folder, range);
-            try
+            BoardData data = ReadMapData(folder, range);
+            if (data != null)
             {
-                puzzleLevels.Add(ReadMapData(folder, range));
+                puzzleLevels.Add(data);
                 StartCoroutine(DownloadLevels(number + 1));
             }
-            catch { }
         }
     }
 
@@ -65,6 +66,9 @@ public class Downloader : MonoBehaviour
     {
         string toLoad = $"{folder}/{range}";
         TextAsset data = Resources.Load(toLoad) as TextAsset;
+
+        if (data == null)
+            return null;
 
         string editData = data.text;
         editData = editData.Replace("],", "").Replace("{", "").Replace("}", "");
@@ -81,7 +85,8 @@ public class Downloader : MonoBehaviour
         }
 
         string[,] grid = new string[numRows.Length, maxCol];
-        for (int x = 0; x < numRows.Length; x++)
+        Debug.Log($"try {folder}/{range} | {grid.GetLength(0)}, {grid.GetLength(1)}");
+        for (int x = 1; x < numRows.Length; x++)
         {
             for (int y = 0; y < maxCol; y++)
             {
@@ -95,6 +100,7 @@ public class Downloader : MonoBehaviour
                 }
             }
         }
+        Debug.Log($"return {folder}/{range} | {grid.GetLength(0)}, {grid.GetLength(1)}");
         return new BoardData(range, grid);
     }
 

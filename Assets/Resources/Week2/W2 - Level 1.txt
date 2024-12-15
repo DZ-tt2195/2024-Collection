@@ -17,17 +17,9 @@
     ],
     [
       "Wall",
-      "",
-      "Wall",
-      "Wall",
-      "",
-      "Wall"
-    ],
-    [
-      "Wall",
       "Star",
-      "Wall",
-      "Wall",
+      "Death",
+      "Death",
       "Flag",
       "Wall"
     ],

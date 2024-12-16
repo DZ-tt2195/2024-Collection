@@ -22,20 +22,19 @@ namespace Week3
         [SerializeField] GameObject objectToInstantiate;
 
         [Foldout("Physics", true)]
-        Rigidbody2D rb;
-        float groundCheckRadius = 0.2f;
+        CharacterController cc;
+        public Vector2 moveInput { get; private set; }
         [SerializeField] float moveSpeed;
+        float groundModify = 0f;
         [SerializeField] float jumpHeight;
         [SerializeField] float gravity;
-        [ReadOnly] public float moveModify = 0f;
-        private bool isGrounded;
-        public Vector2 moveInput { get; private set; }
+        float airModify = 0f;
         float yMovement = 0;
-        private NewControls controls;
+        NewControls controls;
 
         private void Awake()
         {
-            rb = GetComponent<Rigidbody2D>();
+            cc = GetComponent<CharacterController>();
             groundCheckPoint.gameObject.SetActive(false);
             controls = new NewControls();
 
@@ -56,11 +55,6 @@ namespace Week3
 
         void Update()
         {
-            if (yMovement <= 0)
-                isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, groundLayer);
-            else
-                isGrounded = false;
-
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, Input.mousePosition, null, out Vector2 localPoint);
             mouseSprite.transform.localPosition = localPoint;
 
@@ -80,21 +74,29 @@ namespace Week3
 
         private void FixedUpdate()
         {
-            if (!isGrounded)
+            if (!cc.isGrounded)
                 yMovement -= gravity;
-            if (yMovement < -20)
-                yMovement = -20;
+            if (yMovement < -15)
+                yMovement = -15;
 
-            rb.velocity = new Vector2(moveModify + (moveInput.x * moveSpeed), yMovement);
+            Vector3 movement = new(groundModify + (moveInput.x * moveSpeed), airModify + yMovement, 0f);
+            cc.Move(movement*Time.deltaTime);
         }
 
         void Jump()
         {
-            if (isGrounded)
-            {
-                isGrounded = false;
+            if (cc.isGrounded)
                 yMovement = jumpHeight;
-            }
+        }
+
+        public void ModifyGroundSpeed(float speed)
+        {
+            groundModify += speed;
+        }
+
+        public void ModifyAirSpeed(float speed)
+        {
+            airModify += speed;
         }
     }
 }

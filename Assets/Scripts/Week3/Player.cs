@@ -11,17 +11,25 @@ namespace Week3
 {
     public class Player : MonoBehaviour
     {
-        Rigidbody2D rb;
+        [Foldout("Setup", true)]
+        [SerializeField] RectTransform canvas;
+        [SerializeField] Camera mainCam;
         [SerializeField] LayerMask groundLayer;
         [SerializeField] Transform groundCheckPoint;
-        float groundCheckRadius = 0.2f;
 
+        [Foldout("UI", true)]
+        [SerializeField] Image mouseSprite;
+        [SerializeField] GameObject objectToInstantiate;
+
+        [Foldout("Physics", true)]
+        Rigidbody2D rb;
+        float groundCheckRadius = 0.2f;
         [SerializeField] float moveSpeed;
         [SerializeField] float jumpHeight;
         [SerializeField] float gravity;
-
+        [ReadOnly] public float moveModify = 0f;
         private bool isGrounded;
-        private Vector2 moveInput;
+        public Vector2 moveInput { get; private set; }
         float yMovement = 0;
         private NewControls controls;
 
@@ -52,13 +60,32 @@ namespace Week3
                 isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, groundCheckRadius, groundLayer);
             else
                 isGrounded = false;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, Input.mousePosition, null, out Vector2 localPoint);
+            mouseSprite.transform.localPosition = localPoint;
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+                Vector3 worldPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+                worldPos.z = 0;
+
+                if (hit.collider == null)
+                    Instantiate(objectToInstantiate, worldPos, Quaternion.identity);
+                else
+                    Debug.LogError($"can't make object at {worldPos}");
+            }
         }
 
         private void FixedUpdate()
         {
             if (!isGrounded)
                 yMovement -= gravity;
-            rb.velocity = new Vector2(moveInput.x * moveSpeed, yMovement);
+            if (yMovement < -20)
+                yMovement = -20;
+
+            rb.velocity = new Vector2(moveModify + (moveInput.x * moveSpeed), yMovement);
         }
 
         void Jump()

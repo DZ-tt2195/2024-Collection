@@ -19,6 +19,9 @@ namespace Week3
         [Foldout("Create Platforms", true)]
         SpriteRenderer[] platformsToCreate;
         int currentSelection = 0;
+        int _platformsLeft;
+        int PlatFormsLeft { get { return _platformsLeft; } set { platformCount.text = $"Platforms: {value}"; _platformsLeft = value; } }
+        [SerializeField] TMP_Text platformCount;
 
         [Foldout("Misc", true)]
         Vector2 checkPoint;
@@ -31,6 +34,8 @@ namespace Week3
             base.Awake();
             controls = new NewControls();
             checkPoint = this.transform.position;
+
+            PlatFormsLeft = 3;
             platformsToCreate = Resources.LoadAll<SpriteRenderer>("Week3/Platforms");
 
             controls.PlayerMovement.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
@@ -56,7 +61,6 @@ namespace Week3
                     currentSelection = (currentSelection - 1 + platformsToCreate.Length) % platformsToCreate.Length;
                 else if (Input.mouseScrollDelta.y > 0)
                     currentSelection = (currentSelection + 1) % platformsToCreate.Length;
-                Debug.Log($"{Input.mouseScrollDelta.y}: {currentSelection}");
             }
 
             SpriteRenderer currentPlatform = platformsToCreate[currentSelection];
@@ -65,9 +69,12 @@ namespace Week3
             mouseSprite.sprite = currentPlatform.sprite;
             mouseSprite.transform.localScale = currentPlatform.transform.localScale;
             mouseSprite.color = currentPlatform.color;
+            mouseSprite.SetAlpha(PlatFormsLeft > 0 ? 1 : 0.4f);
 
-            if (Input.GetMouseButtonDown(0))
+            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            if (Input.GetMouseButtonDown(0) && PlatFormsLeft > 0 && !Physics.Raycast(ray, out RaycastHit hit))
             {
+                PlatFormsLeft--;
                 Vector3 worldPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
                 worldPos.z = 0;
                 SpriteRenderer newObject = Instantiate(currentPlatform, worldPos, Quaternion.identity);
@@ -75,7 +82,7 @@ namespace Week3
 
                 IEnumerator VanishingObject(SpriteRenderer newObject)
                 {
-                    float maxTime = 4f;
+                    float maxTime = 3f;
                     float elapsedTime = maxTime;
                     while (elapsedTime > 0f)
                     {
@@ -83,6 +90,7 @@ namespace Week3
                         ChangeAlpha(newObject, elapsedTime / maxTime);
                         yield return null;
                     }
+                    PlatFormsLeft++;
                     Destroy(newObject.gameObject);
                 }
             }

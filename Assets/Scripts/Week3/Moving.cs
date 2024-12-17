@@ -6,7 +6,7 @@ namespace Week3
     public class Moving : MonoBehaviour
     {
         [Foldout("Physics", true)]
-        protected CharacterController cc { get; private set; }
+        public CharacterController cc { get; private set; }
         [SerializeField] protected float moveSpeed;
         [SerializeField] float gravity;
         public float groundModify { get; private set; }

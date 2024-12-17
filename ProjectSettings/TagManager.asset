@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Enemy
   - Item
+  - Checkpoint
+  - Death
   layers:
   - Default
   - TransparentFX

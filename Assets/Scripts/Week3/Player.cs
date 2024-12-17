@@ -9,36 +9,29 @@ using UnityEngine.InputSystem;
 
 namespace Week3
 {
-    public class Player : MonoBehaviour
+    public class Player : Moving
     {
         [Foldout("Setup", true)]
         [SerializeField] RectTransform canvas;
         [SerializeField] Camera mainCam;
-        [SerializeField] LayerMask groundLayer;
-        [SerializeField] Transform groundCheckPoint;
         [SerializeField] Image mouseSprite;
-        [SerializeField] TMP_Text platformCount;
 
         [Foldout("Create Platforms", true)]
-        SpriteRenderer platformToCreate;
-        int numPlatform = 0;
+        SpriteRenderer[] platformsToCreate;
+        int currentSelection = 0;
 
-        [Foldout("Physics", true)]
-        CharacterController cc;
-        public Vector2 moveInput { get; private set; }
-        [SerializeField] float moveSpeed;
-        float groundModify = 0f;
-        [SerializeField] float jumpHeight;
-        [SerializeField] float gravity;
-        float airModify = 0f;
-        float yMovement = 0;
+        [Foldout("Misc", true)]
+        Vector2 checkPoint;
+        Vector2 moveInput;
         NewControls controls;
+        [SerializeField] float jumpHeight;
 
-        private void Awake()
+        protected override void Awake()
         {
-            cc = GetComponent<CharacterController>();
-            groundCheckPoint.gameObject.SetActive(false);
+            base.Awake();
             controls = new NewControls();
+            checkPoint = this.transform.position;
+            platformsToCreate = Resources.LoadAll<SpriteRenderer>("Week3/Platforms");
 
             controls.PlayerMovement.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
             controls.PlayerMovement.Move.canceled += ctx => moveInput = new(0, 0);
@@ -57,85 +50,68 @@ namespace Week3
 
         void Update()
         {
-            if (platformToCreate == null || numPlatform == 0)
+            if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.5f)
             {
-                mouseSprite.gameObject.SetActive(false);
-                platformCount.transform.parent.gameObject.SetActive(false);
+                if (Input.mouseScrollDelta.y < 0)
+                    currentSelection = (currentSelection - 1 + platformsToCreate.Length) % platformsToCreate.Length;
+                else if (Input.mouseScrollDelta.y > 0)
+                    currentSelection = (currentSelection + 1) % platformsToCreate.Length;
+                Debug.Log($"{Input.mouseScrollDelta.y}: {currentSelection}");
             }
-            else
-            {
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, Input.mousePosition, null, out Vector2 localPoint);
-                mouseSprite.gameObject.SetActive(true);
-                mouseSprite.transform.localPosition = localPoint;
-                mouseSprite.sprite = platformToCreate.sprite;
-                mouseSprite.transform.localScale = platformToCreate.transform.localScale;
-                mouseSprite.color = platformCount.color;
 
-                if (Input.GetMouseButtonDown(0))
+            SpriteRenderer currentPlatform = platformsToCreate[currentSelection];
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, Input.mousePosition, null, out Vector2 localPoint);
+            mouseSprite.transform.localPosition = localPoint;
+            mouseSprite.sprite = currentPlatform.sprite;
+            mouseSprite.transform.localScale = currentPlatform.transform.localScale;
+            mouseSprite.color = currentPlatform.color;
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                Vector3 worldPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+                worldPos.z = 0;
+                SpriteRenderer newObject = Instantiate(currentPlatform, worldPos, Quaternion.identity);
+                StartCoroutine(VanishingObject(newObject));
+
+                IEnumerator VanishingObject(SpriteRenderer newObject)
                 {
-                    numPlatform--;
-                    Vector3 worldPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
-                    worldPos.z = 0;
-                    SpriteRenderer newObject = Instantiate(platformToCreate, worldPos, Quaternion.identity);
-                    StartCoroutine(VanishingObject(newObject));
-
-                    IEnumerator VanishingObject(SpriteRenderer newObject)
+                    float maxTime = 4f;
+                    float elapsedTime = maxTime;
+                    while (elapsedTime > 0f)
                     {
-                        float maxTime = 4f;
-                        float elapsedTime = maxTime;
-                        while (elapsedTime > 0f)
-                        {
-                            elapsedTime -= Time.deltaTime;
-                            ChangeAlpha(newObject, elapsedTime / maxTime);
-                            yield return null;
-                        }
-                        Destroy(newObject.gameObject);
+                        elapsedTime -= Time.deltaTime;
+                        ChangeAlpha(newObject, elapsedTime / maxTime);
+                        yield return null;
                     }
+                    Destroy(newObject.gameObject);
                 }
-
-                platformCount.transform.parent.gameObject.SetActive(true);
-                platformCount.text = $"Platforms: {numPlatform}";
             }
-        }
-
-        void ChangeAlpha(SpriteRenderer sr, float alpha)
-        {
-            Color newColor = sr.color;
-            newColor.a = alpha;
-            sr.color = newColor;
-        }
-
-        private void FixedUpdate()
-        {
-            if (!cc.isGrounded)
-                yMovement -= gravity;
-            if (yMovement < -20)
-                yMovement = -20;
-            
-            Vector3 movement = new(groundModify + (moveInput.x * moveSpeed), airModify + yMovement, 0f);
-            cc.Move(movement*Time.deltaTime);
         }
 
         void Jump()
         {
             if (cc.isGrounded)
-                yMovement = jumpHeight;
+            {
+                ChangeYMovement(jumpHeight);
+            }
         }
 
-        public void NewPlatforms(SpriteRenderer sr, int amount)
+        protected override Vector2 MoveMe()
         {
-            platformToCreate = sr;
-            numPlatform = amount;
+            Vector2 movement = new(groundModify + (moveInput.x * moveSpeed), yMovement);
+            return movement;
         }
 
-        public void ModifyGroundSpeed(float speed)
+        private void OnTriggerEnter(Collider other)
         {
-            groundModify += speed;
-        }
-
-        public void ModifyAirSpeed(float speed)
-        {
-            airModify += speed;
+            if (other.CompareTag("Checkpoint"))
+            {
+                this.checkPoint = other.transform.position;
+            }
+            else if (other.CompareTag("Death"))
+            {
+                this.transform.position = this.checkPoint;
+            }
         }
     }
 }

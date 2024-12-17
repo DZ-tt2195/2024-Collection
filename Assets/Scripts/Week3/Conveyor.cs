@@ -1,27 +1,29 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace Week3
 {
     public class Conveyor : MonoBehaviour
     {
         [SerializeField] float moveEffect;
-        float currentModify = 0;
+        HashSet<Moving> toMove = new();
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out Player player) && currentModify == 0f)
+            if (other.TryGetComponent(out Moving target) && !toMove.Contains(target))
             {
-                currentModify = moveEffect;
-                player.ModifyGroundSpeed(currentModify);
+                toMove.Add(target);
+                target.ModifyGroundSpeed(moveEffect);
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.TryGetComponent(out Player player) && currentModify != 0f)
+            if (other.TryGetComponent(out Moving target) && toMove.Contains(target))
             {
-                player.ModifyGroundSpeed(-currentModify);
-                currentModify = 0f;
+                toMove.Remove(target);
+                target.ModifyGroundSpeed(-moveEffect);
             }
         }
     }

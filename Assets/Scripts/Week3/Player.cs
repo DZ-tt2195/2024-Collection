@@ -16,10 +16,12 @@ namespace Week3
         [SerializeField] Camera mainCam;
         [SerializeField] LayerMask groundLayer;
         [SerializeField] Transform groundCheckPoint;
-
-        [Foldout("UI", true)]
         [SerializeField] Image mouseSprite;
-        [SerializeField] GameObject objectToInstantiate;
+        [SerializeField] TMP_Text platformCount;
+
+        [Foldout("Create Platforms", true)]
+        SpriteRenderer platformToCreate;
+        int numPlatform = 0;
 
         [Foldout("Physics", true)]
         CharacterController cc;
@@ -55,30 +57,61 @@ namespace Week3
 
         void Update()
         {
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, Input.mousePosition, null, out Vector2 localPoint);
-            mouseSprite.transform.localPosition = localPoint;
-
-            if (Input.GetMouseButtonDown(0))
+            if (platformToCreate == null || numPlatform == 0)
             {
-                Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-                RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
-                Vector3 worldPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
-                worldPos.z = 0;
-
-                if (hit.collider == null)
-                    Instantiate(objectToInstantiate, worldPos, Quaternion.identity);
-                else
-                    Debug.LogError($"can't make object at {worldPos}");
+                mouseSprite.gameObject.SetActive(false);
+                platformCount.transform.parent.gameObject.SetActive(false);
             }
+            else
+            {
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, Input.mousePosition, null, out Vector2 localPoint);
+                mouseSprite.gameObject.SetActive(true);
+                mouseSprite.transform.localPosition = localPoint;
+                mouseSprite.sprite = platformToCreate.sprite;
+                mouseSprite.transform.localScale = platformToCreate.transform.localScale;
+                mouseSprite.color = platformCount.color;
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    numPlatform--;
+                    Vector3 worldPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+                    worldPos.z = 0;
+                    SpriteRenderer newObject = Instantiate(platformToCreate, worldPos, Quaternion.identity);
+                    StartCoroutine(VanishingObject(newObject));
+
+                    IEnumerator VanishingObject(SpriteRenderer newObject)
+                    {
+                        float maxTime = 4f;
+                        float elapsedTime = maxTime;
+                        while (elapsedTime > 0f)
+                        {
+                            elapsedTime -= Time.deltaTime;
+                            ChangeAlpha(newObject, elapsedTime / maxTime);
+                            yield return null;
+                        }
+                        Destroy(newObject.gameObject);
+                    }
+                }
+
+                platformCount.transform.parent.gameObject.SetActive(true);
+                platformCount.text = $"Platforms: {numPlatform}";
+            }
+        }
+
+        void ChangeAlpha(SpriteRenderer sr, float alpha)
+        {
+            Color newColor = sr.color;
+            newColor.a = alpha;
+            sr.color = newColor;
         }
 
         private void FixedUpdate()
         {
             if (!cc.isGrounded)
                 yMovement -= gravity;
-            if (yMovement < -15)
-                yMovement = -15;
-
+            if (yMovement < -20)
+                yMovement = -20;
+            
             Vector3 movement = new(groundModify + (moveInput.x * moveSpeed), airModify + yMovement, 0f);
             cc.Move(movement*Time.deltaTime);
         }
@@ -87,6 +120,12 @@ namespace Week3
         {
             if (cc.isGrounded)
                 yMovement = jumpHeight;
+        }
+
+        public void NewPlatforms(SpriteRenderer sr, int amount)
+        {
+            platformToCreate = sr;
+            numPlatform = amount;
         }
 
         public void ModifyGroundSpeed(float speed)

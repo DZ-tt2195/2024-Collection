@@ -20,11 +20,11 @@ namespace Week3
                 if (bounceEffect.x != 0)
                 {
                     target.ModifyGroundSpeed(bounceEffect.x);
-                    StartCoroutine(WearOff());
+                    target.StartCoroutine(WearOff(target));
 
-                    IEnumerator WearOff()
+                    IEnumerator WearOff(Moving target)
                     {
-                        yield return new WaitForSeconds(1f);
+                        yield return new WaitForSeconds(0.5f);
                         target.ModifyGroundSpeed(-bounceEffect.x);
                     }
                 }

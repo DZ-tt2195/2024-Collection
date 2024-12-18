@@ -1,5 +1,11 @@
-using MyBox;
 using UnityEngine;
+using MyBox;
+using TMPro;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using UnityEngine.InputSystem;
 
 namespace Week3
 {
@@ -43,7 +49,6 @@ namespace Week3
 
         public void ModifyGroundSpeed(float speed)
         {
-            //Debug.Log($"ground speed modified by {speed}");
             groundModify += speed;
         }
 

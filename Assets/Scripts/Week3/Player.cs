@@ -14,10 +14,9 @@ namespace Week3
         [Foldout("Setup", true)]
         [SerializeField] RectTransform canvas;
         [SerializeField] Camera mainCam;
-        [SerializeField] Image mouseSprite;
 
         [Foldout("Create Platforms", true)]
-        SpriteRenderer[] platformsToCreate;
+        List<SpriteRenderer> listOfPrefabs = new();
         int currentSelection = 0;
         int _platformsLeft;
         int PlatFormsLeft { get { return _platformsLeft; } set { platformCount.text = $"Platforms: {value}"; _platformsLeft = value; } }
@@ -36,11 +35,24 @@ namespace Week3
             checkPoint = this.transform.position;
 
             PlatFormsLeft = 3;
-            platformsToCreate = Resources.LoadAll<SpriteRenderer>("Week3/Platforms");
+            SpriteRenderer[] platformsToCreate = Resources.LoadAll<SpriteRenderer>("Week3/Platforms");
+            foreach (SpriteRenderer next in platformsToCreate)
+            {
+                SpriteRenderer obj = Instantiate(next);
+                obj.transform.SetParent(canvas, false);
+                obj.gameObject.SetActive(false);
+                listOfPrefabs.Add(obj);
+
+                Collider[] colliders = obj.GetComponentsInChildren<Collider>();
+                foreach (Collider collider in colliders)
+                    collider.enabled = false;
+            }
 
             controls.PlayerMovement.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
             controls.PlayerMovement.Move.canceled += ctx => moveInput = new(0, 0);
             controls.PlayerMovement.Jump.performed += ctx => Jump();
+            controls.PlayerMovement.Scroll.performed += ctx => Scroll(ctx.ReadValue<Vector2>());
+            controls.PlayerMovement.Place.performed += ctx => PlacePlatform();
         }
 
         void OnEnable()
@@ -55,29 +67,46 @@ namespace Week3
 
         void Update()
         {
-            if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.5f)
+            SpriteRenderer currentPlatform = listOfPrefabs[currentSelection];
+            currentPlatform.gameObject.SetActive(true);
+            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPosition.z = 0;
+            currentPlatform.transform.position = mouseWorldPosition;
+            currentPlatform.SetAlpha(PlatFormsLeft > 0 ? 1 : 0.4f);
+        }
+
+        void Scroll(Vector2 scroll)
+        {
+            listOfPrefabs[currentSelection].gameObject.SetActive(false);
+            if (scroll.y > 0)
+                currentSelection = (currentSelection + 1) % listOfPrefabs.Count;
+            else
+                currentSelection = (currentSelection - 1 + listOfPrefabs.Count) % listOfPrefabs.Count;
+        }
+
+        void Jump()
+        {
+            if (cc.isGrounded)
             {
-                if (Input.mouseScrollDelta.y < 0)
-                    currentSelection = (currentSelection - 1 + platformsToCreate.Length) % platformsToCreate.Length;
-                else if (Input.mouseScrollDelta.y > 0)
-                    currentSelection = (currentSelection + 1) % platformsToCreate.Length;
+                ChangeYMovement(jumpHeight);
             }
+        }
 
-            SpriteRenderer currentPlatform = platformsToCreate[currentSelection];
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, Input.mousePosition, null, out Vector2 localPoint);
-            mouseSprite.transform.localPosition = localPoint;
-            mouseSprite.sprite = currentPlatform.sprite;
-            mouseSprite.transform.localScale = currentPlatform.transform.localScale;
-            mouseSprite.color = currentPlatform.color;
-            mouseSprite.SetAlpha(PlatFormsLeft > 0 ? 1 : 0.4f);
-
+        void PlacePlatform()
+        {
+            SpriteRenderer currentPlatform = listOfPrefabs[currentSelection];
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-            if (Input.GetMouseButtonDown(0) && PlatFormsLeft > 0 && !Physics.Raycast(ray, out RaycastHit hit))
+
+            if (PlatFormsLeft > 0 && !Physics.Raycast(ray, out RaycastHit hit))
             {
                 PlatFormsLeft--;
                 Vector3 worldPos = mainCam.ScreenToWorldPoint(Input.mousePosition);
                 worldPos.z = 0;
+
                 SpriteRenderer newObject = Instantiate(currentPlatform, worldPos, Quaternion.identity);
+                Collider[] colliders = newObject.GetComponentsInChildren<Collider>();
+                foreach (Collider collider in colliders)
+                    collider.enabled = true;
                 StartCoroutine(VanishingObject(newObject));
 
                 IEnumerator VanishingObject(SpriteRenderer newObject)
@@ -93,14 +122,6 @@ namespace Week3
                     PlatFormsLeft++;
                     Destroy(newObject.gameObject);
                 }
-            }
-        }
-
-        void Jump()
-        {
-            if (cc.isGrounded)
-            {
-                ChangeYMovement(jumpHeight);
             }
         }
 

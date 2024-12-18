@@ -27,6 +27,7 @@ public class TitleScreen : MonoBehaviour
     private void Awake()
     {
         Application.targetFrameRate = 60;
+        Time.timeScale = 1;
         for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
         {
             string scenePath = SceneUtility.GetScenePathByBuildIndex(i);

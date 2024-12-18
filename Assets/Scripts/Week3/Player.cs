@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 namespace Week3
 {
@@ -27,10 +28,13 @@ namespace Week3
         Vector2 moveInput;
         NewControls controls;
         [SerializeField] float jumpHeight;
+        bool checkForScroll = true;
 
         protected override void Awake()
         {
             base.Awake();
+            Time.timeScale = 1;
+
             controls = new NewControls();
             checkPoint = this.transform.position;
 
@@ -77,11 +81,22 @@ namespace Week3
 
         void Scroll(Vector2 scroll)
         {
-            listOfPrefabs[currentSelection].gameObject.SetActive(false);
-            if (scroll.y > 0)
-                currentSelection = (currentSelection + 1) % listOfPrefabs.Count;
-            else
-                currentSelection = (currentSelection - 1 + listOfPrefabs.Count) % listOfPrefabs.Count;
+            if (checkForScroll)
+            {
+                StartCoroutine(Resume());
+                listOfPrefabs[currentSelection].gameObject.SetActive(false);
+                if (scroll.y > 0)
+                    currentSelection = (currentSelection + 1) % listOfPrefabs.Count;
+                else
+                    currentSelection = (currentSelection - 1 + listOfPrefabs.Count) % listOfPrefabs.Count;
+
+                IEnumerator Resume()
+                {
+                    checkForScroll = false;
+                    yield return new WaitForSeconds(0.05f);
+                    checkForScroll = true;
+                }
+            }
         }
 
         void Jump()
@@ -97,7 +112,7 @@ namespace Week3
             SpriteRenderer currentPlatform = listOfPrefabs[currentSelection];
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
 
-            if (PlatFormsLeft > 0 && !Physics.Raycast(ray, out RaycastHit hit))
+            if (PlatFormsLeft > 0 && !Physics.Raycast(ray, out RaycastHit hit) && !EventSystem.current.IsPointerOverGameObject())
             {
                 PlatFormsLeft--;
                 Vector3 worldPos = mainCam.ScreenToWorldPoint(Input.mousePosition);

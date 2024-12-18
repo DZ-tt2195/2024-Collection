@@ -238,4 +238,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f07284ca56f44922a2488f756fa8957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceEffect: {x: -20, y: 20}
+  bounceEffect: {x: -20, y: 10}

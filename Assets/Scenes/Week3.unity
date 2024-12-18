@@ -510,7 +510,7 @@ MonoBehaviour:
   canvas: {fileID: 1398127348}
   mainCam: {fileID: 139875656}
   platformCount: {fileID: 855065059}
-  jumpHeight: 15
+  jumpHeight: 12
 --- !u!65 &663913961
 BoxCollider:
   m_ObjectHideFlags: 0

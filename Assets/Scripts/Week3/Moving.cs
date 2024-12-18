@@ -12,14 +12,15 @@ namespace Week3
     public class Moving : MonoBehaviour
     {
         [Foldout("Physics", true)]
-        public CharacterController cc { get; private set; }
+        protected CharacterController cc { get; private set; }
         [SerializeField] protected float moveSpeed;
         [SerializeField] float gravity;
-        public float groundModify { get; private set; }
         public float yMovement { get; private set; }
+        public List<Func<Vector2>> applyForce { get; private set; }
 
         protected virtual void Awake()
         {
+            applyForce = new();
             cc = GetComponent<CharacterController>();
         }
 
@@ -33,10 +34,17 @@ namespace Week3
             cc.Move(MoveMe() * Time.deltaTime);
         }
 
-        protected virtual Vector2 MoveMe()
+        Vector2 MoveMe()
         {
-            Vector2 movement = new(groundModify + moveSpeed, yMovement);
-            return movement;
+            Vector2 total = Vector2.zero;
+            for (int i = applyForce.Count - 1; i >= 0; i--)
+            {
+                Vector2 application = applyForce[i]();
+                total.x += application.x;
+                total.y += application.y;
+            }
+
+            return total;
         }
 
         void OnControllerColliderHit(ControllerColliderHit hit)
@@ -47,9 +55,17 @@ namespace Week3
             }
         }
 
-        public void ModifyGroundSpeed(float speed)
+        public void PushMe(Vector2 push, float time)
         {
-            groundModify += speed;
+            Vector2 action() => (push);
+            applyForce.Add(action);
+            this.StartCoroutine(RemoveMethod());
+
+            IEnumerator RemoveMethod()
+            {
+                yield return new WaitForSeconds(time);
+                applyForce.Remove(action);
+            }
         }
 
         public void ChangeYMovement(float amount)

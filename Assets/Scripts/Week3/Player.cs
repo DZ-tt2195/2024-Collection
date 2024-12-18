@@ -12,6 +12,8 @@ namespace Week3
 {
     public class Player : Moving
     {
+        #region Setup
+
         [Foldout("Setup", true)]
         [SerializeField] RectTransform canvas;
         [SerializeField] Camera mainCam;
@@ -23,20 +25,31 @@ namespace Week3
         int PlatFormsLeft { get { return _platformsLeft; } set { platformCount.text = $"Platforms: {value}"; _platformsLeft = value; } }
         [SerializeField] TMP_Text platformCount;
 
-        [Foldout("Misc", true)]
-        Vector2 checkPoint;
+        [Foldout("Jumping", true)]
+        [SerializeField] float jumpHeight;
+        float coyoteTime;
+        GameObject wallJumpOff = null;
         Vector2 moveInput;
         NewControls controls;
-        [SerializeField] float jumpHeight;
+
+        [Foldout("Misc", true)]
+        Vector2 checkPoint;
         bool checkForScroll = true;
 
         protected override void Awake()
         {
             base.Awake();
-            Time.timeScale = 1;
+            Time.timeScale = 0.75f;
 
             controls = new NewControls();
+            controls.PlayerMovement.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+            controls.PlayerMovement.Move.canceled += ctx => moveInput = new(0, 0);
+            controls.PlayerMovement.Jump.performed += ctx => Jump();
+            controls.PlayerMovement.Scroll.performed += ctx => Scroll(ctx.ReadValue<Vector2>());
+            controls.PlayerMovement.Place.performed += ctx => PlacePlatform();
+
             checkPoint = this.transform.position;
+            applyForce.Add(PlayerMoveMe);
 
             PlatFormsLeft = 3;
             SpriteRenderer[] platformsToCreate = Resources.LoadAll<SpriteRenderer>("Week3/Platforms");
@@ -51,12 +64,6 @@ namespace Week3
                 foreach (Collider collider in colliders)
                     collider.enabled = false;
             }
-
-            controls.PlayerMovement.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-            controls.PlayerMovement.Move.canceled += ctx => moveInput = new(0, 0);
-            controls.PlayerMovement.Jump.performed += ctx => Jump();
-            controls.PlayerMovement.Scroll.performed += ctx => Scroll(ctx.ReadValue<Vector2>());
-            controls.PlayerMovement.Place.performed += ctx => PlacePlatform();
         }
 
         void OnEnable()
@@ -69,6 +76,10 @@ namespace Week3
             controls.PlayerMovement.Disable();
         }
 
+        #endregion
+
+        #region Gameplay
+
         void Update()
         {
             SpriteRenderer currentPlatform = listOfPrefabs[currentSelection];
@@ -77,6 +88,14 @@ namespace Week3
             mouseWorldPosition.z = 0;
             currentPlatform.transform.position = mouseWorldPosition;
             currentPlatform.SetAlpha(PlatFormsLeft > 0 ? 1 : 0.4f);
+
+            coyoteTime = (cc.isGrounded) ? 0.15f : coyoteTime - Time.deltaTime;
+        }
+
+        private Vector2 PlayerMoveMe()
+        {
+            Vector2 movement = new(moveInput.x * moveSpeed, yMovement);
+            return movement;
         }
 
         void Scroll(Vector2 scroll)
@@ -93,7 +112,7 @@ namespace Week3
                 IEnumerator Resume()
                 {
                     checkForScroll = false;
-                    yield return new WaitForSeconds(0.05f);
+                    yield return new WaitForSeconds(0.1f);
                     checkForScroll = true;
                 }
             }
@@ -101,7 +120,13 @@ namespace Week3
 
         void Jump()
         {
-            if (cc.isGrounded)
+            if (wallJumpOff != null && !cc.isGrounded)
+            {
+                float pushEffect = ((wallJumpOff.transform.position.x < this.transform.position.x) ? moveSpeed : -moveSpeed)*1.5f;
+                ChangeYMovement(jumpHeight*(0.75f));
+                PushMe(new(pushEffect, 0), 0.33f);
+            }
+            else if (coyoteTime > 0f)
             {
                 ChangeYMovement(jumpHeight);
             }
@@ -140,12 +165,6 @@ namespace Week3
             }
         }
 
-        protected override Vector2 MoveMe()
-        {
-            Vector2 movement = new(groundModify + (moveInput.x * moveSpeed), yMovement);
-            return movement;
-        }
-
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Checkpoint"))
@@ -156,6 +175,24 @@ namespace Week3
             {
                 this.transform.position = this.checkPoint;
             }
+            else if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                Vector3 collisionNormal = (transform.position - other.ClosestPoint(transform.position)).normalized;
+                if (!cc.isGrounded && Mathf.Abs(collisionNormal.x) > Mathf.Abs(collisionNormal.y))
+                {
+                    wallJumpOff = other.gameObject;
+                }
+            }
         }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.gameObject == wallJumpOff)
+            {
+                wallJumpOff = null;
+            }
+        }
+
+        #endregion
     }
 }

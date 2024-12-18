@@ -6,7 +6,7 @@ namespace Week3
 {
     public class Conveyor : MonoBehaviour
     {
-        [SerializeField] float moveEffect;
+        [SerializeField] Vector2 moveEffect;
         HashSet<Moving> toMove = new();
 
         private void OnTriggerEnter(Collider other)
@@ -14,7 +14,6 @@ namespace Week3
             if (other.TryGetComponent(out Moving target) && !toMove.Contains(target))
             {
                 toMove.Add(target);
-                target.ModifyGroundSpeed(moveEffect);
             }
         }
 
@@ -23,7 +22,19 @@ namespace Week3
             if (other.TryGetComponent(out Moving target) && toMove.Contains(target))
             {
                 toMove.Remove(target);
-                target.ModifyGroundSpeed(-moveEffect);
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            foreach (Moving moving in toMove)
+            {
+                moving.applyForce.Add(action);
+                Vector2 action()
+                {
+                    moving.applyForce.Remove(action);
+                    return moveEffect;
+                }
             }
         }
     }

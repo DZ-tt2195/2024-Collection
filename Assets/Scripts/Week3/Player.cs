@@ -94,8 +94,7 @@ namespace Week3
 
         private Vector2 PlayerMoveMe()
         {
-            Vector2 movement = new(moveInput.x * moveSpeed, yMovement);
-            return movement;
+            return new((disableMainMove) ? 0 : moveInput.x * moveSpeed, yMovement);
         }
 
         void Scroll(Vector2 scroll)
@@ -122,11 +121,11 @@ namespace Week3
         {
             if (wallJumpOff != null && !cc.isGrounded)
             {
-                float pushEffect = ((wallJumpOff.transform.position.x < this.transform.position.x) ? moveSpeed : -moveSpeed)*1.5f;
-                ChangeYMovement(jumpHeight*(0.75f));
-                PushMe(new(pushEffect, 0), 0.33f);
+                float pushEffect = ((wallJumpOff.transform.position.x < this.transform.position.x) ? moveSpeed : -moveSpeed)*1.33f;
+                ChangeYMovement(jumpHeight*0.8f);
+                PushMe(new(pushEffect, 0), 0.2f);
             }
-            else if (coyoteTime > 0f)
+            else if (cc.isGrounded && coyoteTime > 0f)
             {
                 ChangeYMovement(jumpHeight);
             }
@@ -178,19 +177,15 @@ namespace Week3
             else if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
                 Vector3 collisionNormal = (transform.position - other.ClosestPoint(transform.position)).normalized;
-                if (!cc.isGrounded && Mathf.Abs(collisionNormal.x) > Mathf.Abs(collisionNormal.y))
-                {
+                if (Mathf.Abs(collisionNormal.x) > Mathf.Abs(collisionNormal.y))
                     wallJumpOff = other.gameObject;
-                }
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (other.gameObject == wallJumpOff)
-            {
                 wallJumpOff = null;
-            }
         }
 
         #endregion

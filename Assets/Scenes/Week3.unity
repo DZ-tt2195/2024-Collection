@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 12
-  gravity: 0.55
+  gravity: 0.6
   canvas: {fileID: 1398127348}
   mainCam: {fileID: 139875656}
   platformCount: {fileID: 855065059}

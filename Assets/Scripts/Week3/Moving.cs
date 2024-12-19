@@ -15,7 +15,8 @@ namespace Week3
         protected CharacterController cc { get; private set; }
         [SerializeField] protected float moveSpeed;
         [SerializeField] float gravity;
-        public float yMovement { get; private set; }
+        protected bool disableMainMove { get; private set; }
+        protected float yMovement { get; private set; }
         public List<Func<Vector2>> applyForce { get; private set; }
 
         protected virtual void Awake()
@@ -59,11 +60,13 @@ namespace Week3
         {
             Vector2 action() => (push);
             applyForce.Add(action);
+            disableMainMove = true;
             this.StartCoroutine(RemoveMethod());
 
             IEnumerator RemoveMethod()
             {
                 yield return new WaitForSeconds(time);
+                disableMainMove = false;
                 applyForce.Remove(action);
             }
         }

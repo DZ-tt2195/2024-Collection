@@ -88,7 +88,7 @@ namespace Week2
 
             void CreateBoard()
             {
-                BoardData data = Downloader.instance.puzzleLevels[PlayerPrefs.GetInt("Puzzle Level")];
+                BoardData data = Downloader.instance.puzzleLevels[PlayerPrefs.GetInt("Level")];
                 listOfSlots = new Slot[data.terrain.GetLength(0), data.terrain.GetLength(1)];
 
                 for (int i = 0; i < data.terrain.GetLength(0); i++)

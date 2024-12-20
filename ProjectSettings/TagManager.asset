@@ -8,6 +8,7 @@ TagManager:
   - Item
   - Checkpoint
   - Death
+  - End
   layers:
   - Default
   - TransparentFX

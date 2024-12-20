@@ -763,32 +763,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 759327701}
-  - component: {fileID: 759327700}
+  - component: {fileID: 759327702}
   m_Layer: 0
-  m_Name: Puzzle Loader
+  m_Name: Level Loader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &759327700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 759327699}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f8d09f8f728048a68bcb2284048102e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  listOfButtons:
-  - {fileID: 92703801}
-  - {fileID: 1997516844}
-  - {fileID: 280910512}
-  - {fileID: 802965901}
-  - {fileID: 375655068}
 --- !u!4 &759327701
 Transform:
   m_ObjectHideFlags: 0
@@ -804,6 +786,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &759327702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 759327699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb8ab090b4ffb45e4bea9f45e1b687d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  listOfButtons:
+  - {fileID: 92703801}
+  - {fileID: 1997516844}
+  - {fileID: 280910512}
+  - {fileID: 802965901}
+  - {fileID: 375655068}
+  sceneName: PuzzleLevel
 --- !u!1 &802965900
 GameObject:
   m_ObjectHideFlags: 0

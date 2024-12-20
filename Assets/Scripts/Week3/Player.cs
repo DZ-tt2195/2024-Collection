@@ -17,6 +17,8 @@ namespace Week3
         [Foldout("Setup", true)]
         [SerializeField] RectTransform canvas;
         [SerializeField] Camera mainCam;
+        public static bool gameOn;
+        [SerializeField] GameObject ending;
 
         [Foldout("Create Platforms", true)]
         List<SpriteRenderer> listOfPrefabs = new();
@@ -40,6 +42,8 @@ namespace Week3
         {
             base.Awake();
             Time.timeScale = 0.75f;
+            gameOn = true;
+            ending.SetActive(false);
 
             controls = new NewControls();
             controls.PlayerMovement.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
@@ -51,7 +55,7 @@ namespace Week3
             checkPoint = this.transform.position;
             applyForce.Add(PlayerMoveMe);
 
-            PlatFormsLeft = 3;
+            PlatFormsLeft = 2;
             SpriteRenderer[] platformsToCreate = Resources.LoadAll<SpriteRenderer>("Week3/Platforms");
             foreach (SpriteRenderer next in platformsToCreate)
             {
@@ -94,7 +98,12 @@ namespace Week3
 
         private Vector2 PlayerMoveMe()
         {
-            return new((disableMainMove) ? 0 : moveInput.x * moveSpeed, yMovement);
+            if (!gameOn)
+                return Vector3.zero;
+            else if (disableMainMove)
+                return new(0, yMovement);
+            else
+                return new(moveInput.x * moveSpeed, yMovement);
         }
 
         void Scroll(Vector2 scroll)
@@ -111,7 +120,7 @@ namespace Week3
                 IEnumerator Resume()
                 {
                     checkForScroll = false;
-                    yield return new WaitForSeconds(0.1f);
+                    yield return new WaitForSeconds(0.15f);
                     checkForScroll = true;
                 }
             }
@@ -121,8 +130,8 @@ namespace Week3
         {
             if (wallJumpOff != null && !cc.isGrounded)
             {
-                float pushEffect = ((wallJumpOff.transform.position.x < this.transform.position.x) ? moveSpeed : -moveSpeed)*1.33f;
-                ChangeYMovement(jumpHeight*0.8f);
+                float pushEffect = ((wallJumpOff.transform.position.x < this.transform.position.x) ? moveSpeed : -moveSpeed)*1.25f;
+                ChangeYMovement(jumpHeight*0.75f);
                 PushMe(new(pushEffect, 0), 0.2f);
             }
             else if (cc.isGrounded && coyoteTime > 0f)
@@ -150,7 +159,7 @@ namespace Week3
 
                 IEnumerator VanishingObject(SpriteRenderer newObject)
                 {
-                    float maxTime = 3f;
+                    float maxTime = 3.5f;
                     float elapsedTime = maxTime;
                     while (elapsedTime > 0f)
                     {
@@ -169,6 +178,11 @@ namespace Week3
             if (other.CompareTag("Checkpoint"))
             {
                 this.checkPoint = other.transform.position;
+            }
+            else if (other.CompareTag("End"))
+            {
+                gameOn = false;
+                ending.SetActive(true);
             }
             else if (other.CompareTag("Death"))
             {

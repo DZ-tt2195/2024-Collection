@@ -11,17 +11,18 @@ namespace Week3
 
         private void FixedUpdate()
         {
-            transform.Rotate(new Vector3(0, 0, rotation) * Time.deltaTime);
-            transform.Translate(movingDirection*Time.deltaTime);
             foreach (Moving moving in toMove)
             {
                 moving.applyForce.Add(action);
                 Vector2 action()
                 {
                     moving.applyForce.Remove(action);
-                    return movingDirection;
+                    return new Vector2(movingDirection.x, 0);
                 }
             }
+
+            transform.Rotate(new Vector3(0, 0, rotation) * Time.deltaTime);
+            transform.position += (new Vector3(movingDirection.x, movingDirection.y, 0) * Time.deltaTime);
         }
 
         private void OnTriggerEnter(Collider other)

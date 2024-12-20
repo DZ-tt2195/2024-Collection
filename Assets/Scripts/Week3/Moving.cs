@@ -29,6 +29,7 @@ namespace Week3
         {
             if (!cc.isGrounded)
                 yMovement -= gravity;
+
             if (yMovement < -30)
                 yMovement = -30;
 

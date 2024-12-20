@@ -23,6 +23,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Week3 Levels/Week 3 Level 1.unity
     guid: aa379b883db01441695fae58e28b5e3b
+  - enabled: 1
+    path: Assets/Scenes/Week3 Levels/Week 3 Level 2.unity
+    guid: 8dd2ab6af9d24465c9301b3bcdc3e358
+  - enabled: 1
+    path: Assets/Scenes/Week3 Levels/Week 3 Level 3.unity
+    guid: 4172ca840f9094a45b2cec90a3e9a829
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: fa3f48d9eafcb4619bf2850a94086ad9, type: 3}
   m_UseUCBPForAssetBundles: 0

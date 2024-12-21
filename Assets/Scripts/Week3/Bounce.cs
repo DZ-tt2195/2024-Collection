@@ -18,7 +18,7 @@ namespace Week3
             if (other.TryGetComponent(out Moving target))
             {
                 if (bounceEffect.x != 0)
-                    target.PushMe(bounceEffect, 0.2f);
+                    target.PushMe(bounceEffect, 0.3f);
                 if (bounceEffect.y != 0)
                     target.ChangeYMovement(bounceEffect.y);
             }

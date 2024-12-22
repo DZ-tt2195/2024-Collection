@@ -41,7 +41,6 @@ namespace Week3
         protected override void Awake()
         {
             base.Awake();
-            Time.timeScale = 0.75f;
             gameOn = true;
             ending.SetActive(false);
 
@@ -91,7 +90,12 @@ namespace Week3
             Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPosition.z = 0;
             currentPlatform.transform.position = mouseWorldPosition;
-            currentPlatform.SetAlpha(PlatFormsLeft > 0 ? 1 : 0.4f);
+
+            Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            if (PlatFormsLeft > 0 && !Physics.Raycast(ray, out RaycastHit hit))
+                currentPlatform.SetAlpha(1);
+            else
+                currentPlatform.SetAlpha(0.25f);
 
             coyoteTime = (cc.isGrounded) ? 0.15f : coyoteTime - Time.deltaTime;
         }
@@ -159,7 +163,7 @@ namespace Week3
 
                 IEnumerator VanishingObject(SpriteRenderer newObject)
                 {
-                    float maxTime = 3.5f;
+                    float maxTime = 3f;
                     float elapsedTime = maxTime;
                     while (elapsedTime > 0f)
                     {

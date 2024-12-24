@@ -5,7 +5,7 @@ using MyBox;
 
 namespace Week4
 {
-    public enum Location { Home, Crossroads, Center, Left, Right, You }
+    public enum Location { Home, Crossroads, Left, Right, You }
 
     public class Enemy : MonoBehaviour
     {
@@ -24,7 +24,7 @@ namespace Week4
             this.transform.localPosition = SpawnPoint();
             StopAllCoroutines();
 
-            float waitTime = 15 - Random.Range(Mathf.Ceil(difficulty / 2f), difficulty);
+            float waitTime = Random.Range(15f, 30f) - Random.Range(Mathf.Ceil(difficulty / 2f), difficulty);
             Debug.Log($"{this.name}: {currentLocation} ({waitTime})");
             if (difficulty > 0)
                 StartCoroutine(WhileInRoom(waitTime));

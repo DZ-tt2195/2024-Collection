@@ -4,18 +4,18 @@ using Week4;
 
 public class HatesSound : Enemy
 {
-    //walks down to center, then if the central sound is turned on, it runs back home
-    //if sound path is turned on while at crossroads, will run right if right door is open, otherwise runs to center
-    //won't enter your room if the Likers are at crossroads
+    //if the central sound is turned on, it runs back home
+    //if sound path is turned on while at crossroads, will run right if right door is open, otherwise runs to you
+    //won't automatically walk your room if the Likers are at crossroads
 
     protected override IEnumerator WhileInRoom(float time)
     {
         while (time > 0)
         {
-            if (currentLocation == Location.Center && Player.instance.soundCenter)
+            if (currentLocation == Location.Crossroads && Player.instance.soundCenter)
                 MoveToLocation(Location.Home);
             else if (currentLocation == Location.Crossroads && Player.instance.soundPath)
-                MoveToLocation(Player.instance.rightDoor ? Location.Center : Location.Right);
+                MoveToLocation(Player.instance.rightDoor ? Location.You : Location.Right);
 
             time -= Time.deltaTime;
             yield return null;
@@ -27,16 +27,13 @@ public class HatesSound : Enemy
                 MoveToLocation(Location.Crossroads);
                 break;
             case Location.Crossroads:
-                MoveToLocation(Location.Center);
+                MoveToLocation(CanAttack() ? Location.You : Location.Home);
                 break;
             case Location.Left:
                 MoveToLocation(Location.You);
                 break;
             case Location.Right:
                 MoveToLocation(Location.You);
-                break;
-            case Location.Center:
-                MoveToLocation(CanAttack() ? Location.You : Location.Crossroads);
                 break;
         }
     }
@@ -55,12 +52,4 @@ public class HatesSound : Enemy
         }
         return true;
     }
-
-    protected override Vector2 SpawnPoint()
-    {
-        if (currentLocation == Location.Center)
-            return new(-100, -100);
-        return base.SpawnPoint();
-    }
-
 }

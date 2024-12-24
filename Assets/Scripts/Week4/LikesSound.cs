@@ -14,7 +14,7 @@ public class LikesSound : Enemy
         while (time > 0)
         {
             if (currentLocation == Location.Crossroads && Player.instance.soundCenter)
-                MoveToLocation(Location.Center);
+                MoveToLocation(Location.You);
             else if (currentLocation == Location.Left && Player.instance.soundPath)
                 MoveToLocation(Location.Home);
 
@@ -29,7 +29,7 @@ public class LikesSound : Enemy
                 break;
             case Location.Crossroads:
                 if (Player.instance.leftDoor && Player.instance.rightDoor)
-                    MoveToLocation(Location.Center);
+                    MoveToLocation(Location.You);
                 else if (Player.instance.leftDoor || !Player.instance.rightDoor)
                     MoveToLocation(Location.Right);
                 else if (Player.instance.rightDoor)
@@ -39,9 +39,6 @@ public class LikesSound : Enemy
                 MoveToLocation(Location.You);
                 break;
             case Location.Right:
-                MoveToLocation(Location.You);
-                break;
-            case Location.Center:
                 MoveToLocation(Location.You);
                 break;
         }

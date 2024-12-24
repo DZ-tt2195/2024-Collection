@@ -16,12 +16,9 @@ namespace Week4
         public bool lightCenter;
         public bool soundCenter;
 
-        [SerializeField] Slider powerSlider;
-        [SerializeField] TMP_Text powerText;
         [SerializeField] Slider timeSlider;
         [SerializeField] TMP_Text timeText;
 
-        float power = 1000f;
         float time = 0f;
         bool camOn = false;
 
@@ -39,16 +36,6 @@ namespace Week4
             time += Time.deltaTime;
             timeSlider.value = (time / 360f);
             timeText.text = $"Time Left: {time:F0} sec";
-
-            power -= Time.deltaTime;
-            if (leftDoor)
-                power -= Time.deltaTime;
-            if (rightDoor)
-                power -= Time.deltaTime;
-            if (camOn)
-                power -= Time.deltaTime;
-            powerSlider.value = power / 1000f;
-            powerText.text = $"Power Left: {power:F0}";
         }
     }
 }

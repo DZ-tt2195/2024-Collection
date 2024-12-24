@@ -13,15 +13,10 @@ public class LikesLight : Enemy
     {
         while (time > 0)
         {
-            switch (currentLocation)
-            {
-                case Location.Crossroads:
-                    if (Player.instance.lightCenter) MoveToLocation(Location.Center);
-                    break;
-                case Location.Right:
-                    if (Player.instance.lightPath) MoveToLocation(Location.Home);
-                    break;
-            }
+            if (currentLocation == Location.Crossroads && Player.instance.lightCenter)
+                MoveToLocation(Location.Center);
+            else if (currentLocation == Location.Right && Player.instance.lightPath)
+                MoveToLocation(Location.Home);
 
             time -= Time.deltaTime;
             yield return null;
@@ -33,9 +28,12 @@ public class LikesLight : Enemy
                 MoveToLocation(Location.Crossroads);
                 break;
             case Location.Crossroads:
-                if (Player.instance.leftDoor && Player.instance.rightDoor) MoveToLocation(Location.Center);
-                else if (Player.instance.leftDoor) MoveToLocation(Location.Right);
-                else if (Player.instance.rightDoor || !Player.instance.leftDoor) MoveToLocation(Location.Left);
+                if (Player.instance.leftDoor && Player.instance.rightDoor)
+                    MoveToLocation(Location.Center);
+                else if (Player.instance.leftDoor)
+                    MoveToLocation(Location.Right);
+                else if (Player.instance.rightDoor || !Player.instance.leftDoor)
+                    MoveToLocation(Location.Left);
                 break;
             case Location.Left:
                 MoveToLocation(Location.You);

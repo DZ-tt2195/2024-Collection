@@ -14,6 +14,8 @@ public class HatesLight : Enemy
         {
             if (currentLocation == Location.Center && Player.instance.lightCenter)
                 MoveToLocation(Location.Home);
+            else if (currentLocation == Location.Crossroads && Player.instance.lightPath)
+                MoveToLocation(Player.instance.leftDoor ? Location.Center : Location.Left);
 
             time -= Time.deltaTime;
             yield return null;
@@ -52,5 +54,12 @@ public class HatesLight : Enemy
             }
         }
         return true;
+    }
+
+    protected override Vector2 SpawnPoint()
+    {
+        if (currentLocation == Location.Center)
+            return new(-100, -100);
+        return base.SpawnPoint();
     }
 }

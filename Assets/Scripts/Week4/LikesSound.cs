@@ -13,15 +13,10 @@ public class LikesSound : Enemy
     {
         while (time > 0)
         {
-            switch (currentLocation)
-            {
-                case Location.Crossroads:
-                    if (Player.instance.soundCenter) MoveToLocation(Location.Center);
-                    break;
-                case Location.Left:
-                    if (Player.instance.soundPath) MoveToLocation(Location.Home);
-                    break;
-            }
+            if (currentLocation == Location.Crossroads && Player.instance.soundCenter)
+                MoveToLocation(Location.Center);
+            else if (currentLocation == Location.Left && Player.instance.soundPath)
+                MoveToLocation(Location.Home);
 
             time -= Time.deltaTime;
             yield return null;
@@ -33,9 +28,12 @@ public class LikesSound : Enemy
                 MoveToLocation(Location.Crossroads);
                 break;
             case Location.Crossroads:
-                if (Player.instance.leftDoor && Player.instance.rightDoor) MoveToLocation(Location.Center);
-                else if (Player.instance.leftDoor || !Player.instance.rightDoor) MoveToLocation(Location.Right);
-                else if (Player.instance.rightDoor) MoveToLocation(Location.Left);
+                if (Player.instance.leftDoor && Player.instance.rightDoor)
+                    MoveToLocation(Location.Center);
+                else if (Player.instance.leftDoor || !Player.instance.rightDoor)
+                    MoveToLocation(Location.Right);
+                else if (Player.instance.rightDoor)
+                    MoveToLocation(Location.Left);
                 break;
             case Location.Left:
                 MoveToLocation(Location.You);

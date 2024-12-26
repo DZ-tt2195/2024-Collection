@@ -38,8 +38,8 @@ namespace Week4
         private void Update()
         {
             timePassed += Time.deltaTime;
-            timeSlider.value = (timePassed / 360f);
-            timeText.text = $"Time Left: {timePassed:F0}/360";
+            timeSlider.value = (timePassed / 300f);
+            timeText.text = $"Time Left: {timePassed:F0}/300";
 
             cameraMap.gameObject.SetActive(camOn);
             gameButtons.gameObject.SetActive(!camOn);
@@ -59,14 +59,16 @@ namespace Week4
             mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
         }
 
-        public void ToggleLeftDoor()
+        public void ToggleLeftDoor(TMP_Text textBox)
         {
             leftDoor = !leftDoor;
+            textBox.text = $"Left Door\n({(leftDoor ? "Closed" : "Open")})";
         }
 
-        public void ToggleRightDoor()
+        public void ToggleRightDoor(TMP_Text textBox)
         {
             rightDoor = !rightDoor;
+            textBox.text = $"Right Door\n({(rightDoor ? "Closed" : "Open")})";
         }
 
         public void ToggleLightCenter()

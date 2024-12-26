@@ -10,10 +10,11 @@ namespace Week4
     public class Enemy : MonoBehaviour
     {
         public Location currentLocation { get; private set; }
-        [PositiveValueOnly] [MaxValue(10)] [SerializeField] int difficulty;
+        int difficulty;
 
         private void Start()
         {
+            difficulty = PlayerPrefs.GetInt(this.name);
             MoveToLocation(Location.Home);
         }
 
@@ -24,8 +25,8 @@ namespace Week4
             this.transform.localPosition = SpawnPoint();
             StopAllCoroutines();
 
-            float waitTime = Random.Range(15f, 30f) - Random.Range(Mathf.Ceil(difficulty / 2f), difficulty);
-            Debug.Log($"{this.name}: {currentLocation} ({waitTime})");
+            float waitTime = Random.Range(15f, 25f) - Random.Range(0f, difficulty);
+            //Debug.Log($"{this.name}: {currentLocation} ({waitTime})");
             if (difficulty > 0)
                 StartCoroutine(WhileInRoom(waitTime));
         }

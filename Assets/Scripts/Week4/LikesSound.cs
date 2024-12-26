@@ -4,6 +4,7 @@ using Week4;
 
 public class LikesSound : Enemy
 {
+    //won't enter crossroads if LikesLight is there
     //at the crossroads:
     //if both doors are closed, or the central sound is activated, it goes down and is unstoppable
     //if right door is open, it goes right and is unstoppable
@@ -25,7 +26,7 @@ public class LikesSound : Enemy
         switch (currentLocation)
         {
             case Location.Home:
-                MoveToLocation(Location.Crossroads);
+                MoveToLocation(CanMove() ? Location.Crossroads : Location.Home);
                 break;
             case Location.Crossroads:
                 if (Player.instance.leftDoor && Player.instance.rightDoor)
@@ -42,5 +43,14 @@ public class LikesSound : Enemy
                 MoveToLocation(Location.You);
                 break;
         }
+    }
+
+    bool CanMove()
+    {
+        foreach (Enemy enemy in Player.instance.listOfEnemies)
+            if (enemy.currentLocation == Location.Crossroads)
+                if (enemy is LikesLight)
+                    return false;
+        return true;
     }
 }

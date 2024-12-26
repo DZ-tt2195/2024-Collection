@@ -30,9 +30,9 @@ public class LikesLight : Enemy
             case Location.Crossroads:
                 if (Player.instance.leftDoor && Player.instance.rightDoor)
                     MoveToLocation(Location.You);
-                else if (Player.instance.leftDoor)
+                else if (!Player.instance.rightDoor)
                     MoveToLocation(Location.Right);
-                else if (Player.instance.rightDoor || !Player.instance.leftDoor)
+                else if (Player.instance.rightDoor)
                     MoveToLocation(Location.Left);
                 break;
             case Location.Left:

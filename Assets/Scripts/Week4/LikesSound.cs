@@ -30,7 +30,7 @@ public class LikesSound : Enemy
             case Location.Crossroads:
                 if (Player.instance.leftDoor && Player.instance.rightDoor)
                     MoveToLocation(Location.You);
-                else if (Player.instance.leftDoor || !Player.instance.rightDoor)
+                else if (!Player.instance.rightDoor)
                     MoveToLocation(Location.Right);
                 else if (Player.instance.rightDoor)
                     MoveToLocation(Location.Left);

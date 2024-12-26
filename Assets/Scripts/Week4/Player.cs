@@ -18,8 +18,12 @@ namespace Week4
 
         [SerializeField] Slider timeSlider;
         [SerializeField] TMP_Text timeText;
+        [SerializeField] Transform gameButtons;
+        [SerializeField] Transform cameraMap;
+        [SerializeField] Camera mainCam;
 
-        float time = 0f;
+        float timePassed = 0f;
+        int currentCam = 0;
         bool camOn = false;
 
         public Enemy[] listOfEnemies;
@@ -33,9 +37,84 @@ namespace Week4
 
         private void Update()
         {
-            time += Time.deltaTime;
-            timeSlider.value = (time / 360f);
-            timeText.text = $"Time Left: {time:F0} sec";
+            timePassed += Time.deltaTime;
+            timeSlider.value = (timePassed / 360f);
+            timeText.text = $"Time Left: {timePassed:F0}/360";
+
+            cameraMap.gameObject.SetActive(camOn);
+            gameButtons.gameObject.SetActive(!camOn);
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                camOn = !camOn;
+                Vector3 newPosition = camOn ? listOfLocations[currentCam].transform.position : listOfLocations[^1].transform.position;
+                mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
+            }
+        }
+
+        public void SwitchCamera(int newCam)
+        {
+            currentCam = newCam;
+            Vector3 newPosition = listOfLocations[currentCam].transform.position;
+            mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
+        }
+
+        public void ToggleLeftDoor()
+        {
+            leftDoor = !leftDoor;
+        }
+
+        public void ToggleRightDoor()
+        {
+            rightDoor = !rightDoor;
+        }
+
+        public void ToggleLightCenter()
+        {
+            lightCenter = true;
+            StartCoroutine(Disable());
+
+            IEnumerator Disable()
+            {
+                yield return new WaitForSeconds(0.5f);
+                lightCenter = false;
+            }
+        }
+
+        public void ToggleSoundCenter()
+        {
+            soundCenter = true;
+            StartCoroutine(Disable());
+
+            IEnumerator Disable()
+            {
+                yield return new WaitForSeconds(0.5f);
+                soundCenter = false;
+            }
+        }
+
+        public void ToggleLightPath()
+        {
+            lightPath = true;
+            StartCoroutine(Disable());
+
+            IEnumerator Disable()
+            {
+                yield return new WaitForSeconds(0.5f);
+                lightPath = false;
+            }
+        }
+
+        public void ToggleSoundPath()
+        {
+            soundPath = true;
+            StartCoroutine(Disable());
+
+            IEnumerator Disable()
+            {
+                yield return new WaitForSeconds(0.5f);
+                soundPath = false;
+            }
         }
     }
 }

@@ -10,12 +10,13 @@ namespace Week4
     public class Enemy : MonoBehaviour
     {
         public Location currentLocation { get; private set; }
+        protected Location startLocation;
         int difficulty;
 
         private void Start()
         {
             difficulty = PlayerPrefs.GetInt(this.name);
-            MoveToLocation(Location.Home);
+            MoveToLocation(startLocation);
         }
 
         protected void MoveToLocation(Location location)
@@ -25,15 +26,17 @@ namespace Week4
             this.transform.localPosition = SpawnPoint();
             StopAllCoroutines();
 
-            float waitTime = Random.Range(15f, 25f) - Random.Range(0f, difficulty);
+            float waitTime = Random.Range(7.5f, 15f) - Random.Range(0f, difficulty);
             //Debug.Log($"{this.name}: {currentLocation} ({waitTime})");
-            if (difficulty > 0)
-                StartCoroutine(WhileInRoom(waitTime));
+            if (currentLocation == Location.You)
+                Player.instance.GameOver("You Lost.");
+            else if (difficulty > 0)
+                StartCoroutine(WhileInRoom(Mathf.Clamp(waitTime, 7.5f, 15f)));
         }
 
         protected virtual Vector2 SpawnPoint()
         {
-            return new(Random.Range(-0.35f, 0.35f), Random.Range(-0.35f, 0.35f));
+            return new(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f));
         }
 
         protected virtual IEnumerator WhileInRoom(float time)

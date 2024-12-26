@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 152212901}
   - component: {fileID: 152212900}
   m_Layer: 5
-  m_Name: HatesSound
+  m_Name: Hates Sound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -894,7 +894,7 @@ GameObject:
   - component: {fileID: 726152227}
   - component: {fileID: 726152226}
   m_Layer: 5
-  m_Name: LikesLight
+  m_Name: Likes Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1294,7 +1294,7 @@ GameObject:
   - component: {fileID: 972417495}
   - component: {fileID: 972417494}
   m_Layer: 5
-  m_Name: HatesLight
+  m_Name: Hates Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2376,7 +2376,7 @@ GameObject:
   - component: {fileID: 1506202566}
   - component: {fileID: 1506202565}
   m_Layer: 5
-  m_Name: LikesSound
+  m_Name: Likes Sound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3356,8 +3356,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Attracted to light. Lure it towards the light path. Will attack you if
-    you use the light flash.
+  m_text: Attracted to light. Lure it towards the light path with doors. Will attack
+    you if you use the light flash.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}
   m_sharedMaterial: {fileID: -3852492252101762229, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}
@@ -3384,7 +3384,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 73.25
+  m_fontSize: 71.55
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3493,8 +3493,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Attracted to sound. Lure it towards the sound path. Will attack you if
-    you use the sound flash.
+  m_text: Attracted to sound. Lure it towards the sound path with doors. Will attack
+    you if you use the sound flash.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}
   m_sharedMaterial: {fileID: -3852492252101762229, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}
@@ -3521,7 +3521,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 71.95
+  m_fontSize: 70.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

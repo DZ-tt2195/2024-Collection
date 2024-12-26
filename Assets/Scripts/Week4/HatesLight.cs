@@ -8,14 +8,19 @@ public class HatesLight : Enemy
     //if light path is turned on while at crossroads, will run right if right door is open, otherwise runs to you
     //won't automatically walk into your room if the Likers are at crossroads
 
+    private void Awake()
+    {
+        startLocation = Location.Left;
+    }
+
     protected override IEnumerator WhileInRoom(float time)
     {
         while (time > 0)
         {
-            if (currentLocation == Location.Crossroads && Player.instance.lightCenter)
-                MoveToLocation(Location.Home);
-            else if (currentLocation == Location.Crossroads && Player.instance.lightPath && !Player.instance.rightDoor)
-                MoveToLocation(Player.instance.leftDoor ? Location.You : Location.Left);
+            if (currentLocation == Location.Crossroads && Player.instance.soundCenter)
+                MoveToLocation(Player.instance.leftDoor ? Location.Home : Location.Left);
+            else if (currentLocation == Location.Crossroads && Player.instance.soundPath)
+                MoveToLocation(Location.You);
 
             time -= Time.deltaTime;
             yield return null;
@@ -27,23 +32,20 @@ public class HatesLight : Enemy
                 MoveToLocation(Location.Crossroads);
                 break;
             case Location.Crossroads:
-                MoveToLocation(CanAttack() ? Location.You : Location.Home);
+                MoveToLocation(CanAttack() ? Location.You : Location.Crossroads);
                 break;
             case Location.Left:
-                MoveToLocation(Location.You);
-                break;
-            case Location.Right:
-                MoveToLocation(Location.You);
+                MoveToLocation(Player.instance.leftDoor ? Location.Left : Location.Crossroads);
                 break;
         }
-    }
 
-    bool CanAttack()
-    {
-        foreach (Enemy enemy in Player.instance.listOfEnemies)
-            if (enemy.currentLocation == Location.Crossroads)
-                if (enemy is LikesLight || enemy is LikesSound)
-                    return false;
-        return true;
+        bool CanAttack()
+        {
+            foreach (Enemy enemy in Player.instance.listOfEnemies)
+                if (enemy.currentLocation == Location.Crossroads)
+                    if (enemy is LikesLight)
+                        return false;
+            return true;
+        }
     }
 }

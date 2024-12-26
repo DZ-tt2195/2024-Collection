@@ -2932,18 +2932,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c85785a37f86427f808717586f47fb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftDoor: 0
-  rightDoor: 0
-  lightPath: 0
-  soundPath: 0
-  lightCenter: 0
-  soundCenter: 0
   timeSlider: {fileID: 1257566048}
   timeText: {fileID: 554255368}
   gameButtons: {fileID: 1871845709}
   cameraMap: {fileID: 1424321570}
   mainCam: {fileID: 248291451}
-  listOfEnemies: []
   listOfLocations:
   - {fileID: 47110797}
   - {fileID: 1385678255}
@@ -3215,7 +3208,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Left Door
 
-    (Open)'
+    (Closed)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}
   m_sharedMaterial: {fileID: -3852492252101762229, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}
@@ -6576,7 +6569,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Right Door
 
-    (Open)'
+    (Closed)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}
   m_sharedMaterial: {fileID: -3852492252101762229, guid: 8c64c47af7c1c4fb5b88d184433c6c44, type: 2}

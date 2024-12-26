@@ -9,12 +9,12 @@ namespace Week4
     public class Player : MonoBehaviour
     {
         public static Player instance;
-        public bool leftDoor;
-        public bool rightDoor;
-        public bool lightPath;
-        public bool soundPath;
-        public bool lightCenter;
-        public bool soundCenter;
+        public bool leftDoor { get; private set; }
+        public bool rightDoor { get; private set; }
+        public bool lightPath { get; private set; }
+        public bool soundPath { get; private set; }
+        public bool lightCenter { get; private set; }
+        public bool soundCenter { get; private set; }
 
         [SerializeField] Slider timeSlider;
         [SerializeField] TMP_Text timeText;
@@ -23,23 +23,34 @@ namespace Week4
         [SerializeField] Camera mainCam;
 
         float timePassed = 0f;
+        float gameLength = 200f;
+        bool gameOn = true;
+
         int currentCam = 0;
         bool camOn = false;
 
-        public Enemy[] listOfEnemies;
+        public Enemy[] listOfEnemies { get; private set; }
         public List<Transform> listOfLocations = new();
 
         private void Awake()
         {
             instance = this;
             listOfEnemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+            rightDoor = true;
+            leftDoor = true;
         }
 
         private void Update()
         {
+            if (!gameOn)
+                return;
+
             timePassed += Time.deltaTime;
-            timeSlider.value = (timePassed / 300f);
-            timeText.text = $"Time Left: {timePassed:F0}/300";
+            timeSlider.value = (timePassed / gameLength);
+            timeText.text = $"Time Left: {timePassed:F0}/{gameLength:F0}";
+
+            if (timePassed > gameLength)
+                GameOver("You Won!");
 
             cameraMap.gameObject.SetActive(camOn);
             gameButtons.gameObject.SetActive(!camOn);
@@ -50,6 +61,17 @@ namespace Week4
                 Vector3 newPosition = camOn ? listOfLocations[currentCam].transform.position : listOfLocations[^1].transform.position;
                 mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
             }
+        }
+
+        public void GameOver(string text)
+        {
+            gameOn = false;
+            Debug.Log(text);
+            SwitchCamera(listOfLocations.Count-1);
+            cameraMap.gameObject.SetActive(false);
+            gameButtons.gameObject.SetActive(false);
+            foreach (Enemy enemy in listOfEnemies)
+                enemy.StopAllCoroutines();
         }
 
         public void SwitchCamera(int newCam)

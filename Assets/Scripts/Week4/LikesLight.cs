@@ -10,6 +10,11 @@ public class LikesLight : Enemy
     //if left door is open, it goes left and is unstoppable
     //if left door is closed, it goes right and can be sent home with the light path
 
+    private void Awake()
+    {
+        startLocation = Location.Home;
+    }
+
     protected override IEnumerator WhileInRoom(float time)
     {
         while (time > 0)

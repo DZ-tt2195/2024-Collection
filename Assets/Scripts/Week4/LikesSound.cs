@@ -10,6 +10,11 @@ public class LikesSound : Enemy
     //if right door is open, it goes right and is unstoppable
     //if right door is closed, it goes left and can be sent home with the sound path
 
+    private void Awake()
+    {
+        startLocation = Location.Home;
+    }
+
     protected override IEnumerator WhileInRoom(float time)
     {
         while (time > 0)

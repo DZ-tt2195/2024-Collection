@@ -17,14 +17,15 @@ public class LikesSound : Enemy
 
     protected override IEnumerator WhileInRoom(float time)
     {
-        while (time > 0)
+        float elapsedTime = 0f;
+        while (elapsedTime < time)
         {
-            if (currentLocation == Location.Crossroads && Player.instance.soundCenter)
+            if (currentLocation == Location.Crossroads && Player.instance.soundCenter && elapsedTime > 2f)
                 MoveToLocation(Location.You);
             else if (currentLocation == Location.Left && Player.instance.soundPath)
                 MoveToLocation(Location.Home);
 
-            time -= Time.deltaTime;
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 

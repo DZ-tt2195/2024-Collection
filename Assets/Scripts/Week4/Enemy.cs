@@ -26,12 +26,12 @@ namespace Week4
             this.transform.localPosition = SpawnPoint();
             StopAllCoroutines();
 
-            float waitTime = Random.Range(7.5f, 15f) - Random.Range(0f, difficulty);
+            float waitTime = Random.Range(5f, 15f) - Random.Range(0f, difficulty);
             //Debug.Log($"{this.name}: {currentLocation} ({waitTime})");
             if (currentLocation == Location.You)
                 Player.instance.GameOver("You Lost.");
             else if (difficulty > 0)
-                StartCoroutine(WhileInRoom(Mathf.Clamp(waitTime, 7.5f, 15f)));
+                StartCoroutine(WhileInRoom(Mathf.Clamp(waitTime, 5f, 15f)));
         }
 
         protected virtual Vector2 SpawnPoint()

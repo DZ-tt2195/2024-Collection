@@ -15,14 +15,17 @@ public class HatesLight : Enemy
 
     protected override IEnumerator WhileInRoom(float time)
     {
-        while (time > 0)
+        float elapsedTime = 0f;
+        while (elapsedTime < time)
         {
-            if (currentLocation == Location.Crossroads && Player.instance.soundCenter)
+            if (currentLocation == Location.Crossroads && Player.instance.lightCenter)
                 MoveToLocation(Player.instance.leftDoor ? Location.Home : Location.Left);
-            else if (currentLocation == Location.Crossroads && Player.instance.soundPath)
+            else if (currentLocation == Location.Crossroads && Player.instance.lightPath)
                 MoveToLocation(Location.You);
-
-            time -= Time.deltaTime;
+            else if (currentLocation == Location.Crossroads && !CanAttack())
+                elapsedTime = 0f;
+            else
+                elapsedTime += Time.deltaTime;
             yield return null;
         }
 
@@ -32,7 +35,7 @@ public class HatesLight : Enemy
                 MoveToLocation(Location.Crossroads);
                 break;
             case Location.Crossroads:
-                MoveToLocation(CanAttack() ? Location.You : Location.Crossroads);
+                MoveToLocation(Location.You);
                 break;
             case Location.Left:
                 MoveToLocation(Player.instance.leftDoor ? Location.Left : Location.Crossroads);

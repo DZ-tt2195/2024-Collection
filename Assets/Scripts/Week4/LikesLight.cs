@@ -17,14 +17,15 @@ public class LikesLight : Enemy
 
     protected override IEnumerator WhileInRoom(float time)
     {
-        while (time > 0)
+        float elapsedTime = 0f;
+        while (elapsedTime < time)
         {
-            if (currentLocation == Location.Crossroads && Player.instance.lightCenter)
+            if (currentLocation == Location.Crossroads && Player.instance.lightCenter && elapsedTime > 2f)
                 MoveToLocation(Location.You);
             else if (currentLocation == Location.Right && Player.instance.lightPath)
                 MoveToLocation(Location.Home);
 
-            time -= Time.deltaTime;
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 

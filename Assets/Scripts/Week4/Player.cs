@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 namespace Week4
 {
@@ -18,16 +19,21 @@ namespace Week4
 
         [SerializeField] Slider timeSlider;
         [SerializeField] TMP_Text timeText;
+        [SerializeField] Slider cameraSlider;
+        [SerializeField] TMP_Text cameraText;
         [SerializeField] Transform gameButtons;
         [SerializeField] Transform cameraMap;
         [SerializeField] Camera mainCam;
 
         float timePassed = 0f;
-        float gameLength = 200f;
+        float gameLength = 180f;
+        float cameraPower;
+        float maxPower = 50f;
         bool gameOn = true;
 
         int currentCam = 0;
         bool camOn = false;
+        [SerializeField] TMP_Text endText;
 
         public Enemy[] listOfEnemies { get; private set; }
         public List<Transform> listOfLocations = new();
@@ -38,6 +44,12 @@ namespace Week4
             listOfEnemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
             rightDoor = true;
             leftDoor = true;
+            cameraPower = maxPower;
+        }
+
+        public void OnButtonClick()
+        {
+            EventSystem.current.SetSelectedGameObject(null);
         }
 
         private void Update()
@@ -52,24 +64,35 @@ namespace Week4
             if (timePassed > gameLength)
                 GameOver("You Won!");
 
+            if (cameraPower == 0f)
+                camOn = false;
+            else if (Input.GetKeyDown(KeyCode.Space))
+                camOn = !camOn;
+
+            Vector3 newPosition = camOn ? listOfLocations[currentCam].transform.position : listOfLocations[^1].transform.position;
+            mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
+
             cameraMap.gameObject.SetActive(camOn);
             gameButtons.gameObject.SetActive(!camOn);
 
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                camOn = !camOn;
-                Vector3 newPosition = camOn ? listOfLocations[currentCam].transform.position : listOfLocations[^1].transform.position;
-                mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
-            }
+            if (camOn)
+                cameraPower -= Time.deltaTime;
+            cameraPower = Mathf.Max(0f, cameraPower);
+            cameraSlider.value = cameraPower / maxPower;
+            cameraText.text = $"Camera Battery: {cameraPower:F0}";
         }
 
         public void GameOver(string text)
         {
             gameOn = false;
-            Debug.Log(text);
-            SwitchCamera(listOfLocations.Count-1);
+            endText.transform.parent.gameObject.SetActive(true);
+            endText.text = text;
+
             cameraMap.gameObject.SetActive(false);
             gameButtons.gameObject.SetActive(false);
+
+            Vector3 newPosition = listOfLocations[^1].transform.position;
+            mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
             foreach (Enemy enemy in listOfEnemies)
                 enemy.StopAllCoroutines();
         }
@@ -77,8 +100,6 @@ namespace Week4
         public void SwitchCamera(int newCam)
         {
             currentCam = newCam;
-            Vector3 newPosition = listOfLocations[currentCam].transform.position;
-            mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
         }
 
         public void ToggleLeftDoor(TMP_Text textBox)

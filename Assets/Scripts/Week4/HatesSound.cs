@@ -15,14 +15,17 @@ public class HatesSound : Enemy
 
     protected override IEnumerator WhileInRoom(float time)
     {
-        while (time > 0)
+        float elapsedTime = 0f;
+        while (elapsedTime < time)
         {
             if (currentLocation == Location.Crossroads && Player.instance.soundCenter)
                 MoveToLocation(Player.instance.rightDoor ? Location.Home : Location.Right);
             else if (currentLocation == Location.Crossroads && Player.instance.soundPath)
                 MoveToLocation(Location.You);
-
-            time -= Time.deltaTime;
+            else if (currentLocation == Location.Crossroads && !CanAttack())
+                elapsedTime = 0f;
+            else
+                elapsedTime += Time.deltaTime;
             yield return null;
         }
 
@@ -32,7 +35,7 @@ public class HatesSound : Enemy
                 MoveToLocation(Location.Crossroads);
                 break;
             case Location.Crossroads:
-                MoveToLocation(CanAttack() ? Location.You : Location.Crossroads);
+                MoveToLocation(Location.You);
                 break;
             case Location.Right:
                 MoveToLocation(Player.instance.rightDoor ? Location.Right : Location.Crossroads);

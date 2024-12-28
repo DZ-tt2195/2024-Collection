@@ -28,7 +28,7 @@ namespace Week4
 
             float variable = 13.5f - difficulty;
             if (currentLocation == Location.You)
-                Player.instance.GameOver("You Lost.");
+                Player.instance.GameOver("You Lost.", false);
             else if (difficulty > 0)
                 StartCoroutine(WhileInRoom(Random.Range(variable, variable + 4f)));
         }

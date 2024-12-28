@@ -19,7 +19,15 @@ namespace Week4
         public bool soundCenter { get; private set; }
 
         [Foldout("Sounds", true)]
-        [SerializeField] AudioClip clip;
+        [SerializeField] AudioClip doorOpen;
+        [SerializeField] AudioClip doorClose;
+        [SerializeField] AudioClip cameraSound;
+        [SerializeField] AudioClip lightPathSound;
+        [SerializeField] AudioClip soundPathSound;
+        [SerializeField] AudioClip lightCenterSound;
+        [SerializeField] AudioClip soundCenterSound;
+        [SerializeField] AudioClip winSound;
+        [SerializeField] AudioClip loseSound;
 
         [Foldout("UI", true)]
         [SerializeField] Slider timeSlider;
@@ -69,14 +77,18 @@ namespace Week4
 
             if (timePassed > gameLength)
             {
-                GameOver("You Won!");
+                GameOver("You Won!", true);
                 return;
             }
 
             if (cameraPower == 0f)
                 camOn = false;
             else if (Input.GetKeyDown(KeyCode.Space))
+            {
                 camOn = !camOn;
+                if (camOn)
+                    AudioManager.instance.PlaySound(cameraSound, 0.5f);
+            }
 
             Vector3 newPosition = camOn ? listOfLocations[currentCam].transform.position : listOfLocations[^1].transform.position;
             mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
@@ -91,7 +103,7 @@ namespace Week4
             cameraText.text = $"Camera Battery: {cameraPower:F1}";
         }
 
-        public void GameOver(string text)
+        public void GameOver(string text, bool won)
         {
             gameOn = false;
             endText.transform.parent.gameObject.SetActive(true);
@@ -99,6 +111,7 @@ namespace Week4
 
             cameraMap.gameObject.SetActive(false);
             gameButtons.gameObject.SetActive(false);
+            AudioManager.instance.PlaySound(won ? winSound : loseSound, 0.5f);
 
             Vector3 newPosition = listOfLocations[^1].transform.position;
             mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
@@ -109,23 +122,32 @@ namespace Week4
         public void SwitchCamera(int newCam)
         {
             currentCam = newCam;
+            AudioManager.instance.PlaySound(cameraSound, 0.5f);
         }
 
         public void ToggleLeftDoor(TMP_Text textBox)
         {
             leftDoor = !leftDoor;
             textBox.text = $"Left Door\n({(leftDoor ? "Closed" : "Open")})";
+            DoorSound(leftDoor);
         }
 
         public void ToggleRightDoor(TMP_Text textBox)
         {
             rightDoor = !rightDoor;
             textBox.text = $"Right Door\n({(rightDoor ? "Closed" : "Open")})";
+            DoorSound(rightDoor);
+        }
+
+        void DoorSound(bool open)
+        {
+            AudioManager.instance.PlaySound(open ? doorOpen : doorClose, 0.5f);
         }
 
         public void ToggleLightCenter()
         {
             lightCenter = true;
+            AudioManager.instance.PlaySound(lightCenterSound, 0.5f);
             StartCoroutine(Disable());
 
             IEnumerator Disable()
@@ -138,6 +160,7 @@ namespace Week4
         public void ToggleSoundCenter()
         {
             soundCenter = true;
+            AudioManager.instance.PlaySound(soundCenterSound, 0.5f);
             StartCoroutine(Disable());
 
             IEnumerator Disable()
@@ -150,6 +173,7 @@ namespace Week4
         public void ToggleLightPath()
         {
             lightPath = true;
+            AudioManager.instance.PlaySound(lightPathSound, 0.5f);
             StartCoroutine(Disable());
 
             IEnumerator Disable()
@@ -162,6 +186,7 @@ namespace Week4
         public void ToggleSoundPath()
         {
             soundPath = true;
+            AudioManager.instance.PlaySound(soundPathSound, 0.5f);
             StartCoroutine(Disable());
 
             IEnumerator Disable()

@@ -3118,7 +3118,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c85785a37f86427f808717586f47fb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clip: {fileID: 0}
+  doorOpen: {fileID: 8300000, guid: a625777dc64284535bc1ea5bf40c3274, type: 3}
+  doorClose: {fileID: 8300000, guid: a90a00a2061864b45b54d186332e3b7d, type: 3}
+  cameraSound: {fileID: 8300000, guid: a689385efa312489bbc44724ca0af5eb, type: 3}
+  lightPathSound: {fileID: 8300000, guid: 84b17b446eb974e889d111c6f69b29eb, type: 3}
+  soundPathSound: {fileID: 8300000, guid: c118ee8a502f7488fba4e3eb331da68e, type: 3}
+  lightCenterSound: {fileID: 8300000, guid: 8d1e5b2e352794275b2e1929e11b5c48, type: 3}
+  soundCenterSound: {fileID: 8300000, guid: e067ade34a8334c46ad51221debd7919, type: 3}
+  winSound: {fileID: 8300000, guid: ddbdaa115a0714bf897f5b06586ec0b0, type: 3}
+  loseSound: {fileID: 8300000, guid: 18aca6cc0317b41e295541cda240d44b, type: 3}
   timeSlider: {fileID: 1257566048}
   timeText: {fileID: 554255368}
   cameraSlider: {fileID: 2030584076}

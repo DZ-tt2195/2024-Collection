@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using MyBox;
 
 namespace Week4
 {
@@ -17,6 +18,10 @@ namespace Week4
         public bool lightCenter { get; private set; }
         public bool soundCenter { get; private set; }
 
+        [Foldout("Sounds", true)]
+        [SerializeField] AudioClip clip;
+
+        [Foldout("UI", true)]
         [SerializeField] Slider timeSlider;
         [SerializeField] TMP_Text timeText;
         [SerializeField] Slider cameraSlider;
@@ -24,7 +29,9 @@ namespace Week4
         [SerializeField] Transform gameButtons;
         [SerializeField] Transform cameraMap;
         [SerializeField] Camera mainCam;
+        [SerializeField] TMP_Text endText;
 
+        [Foldout("Misc", true)]
         float timePassed = 0f;
         float gameLength = 180f;
         float cameraPower;
@@ -33,7 +40,6 @@ namespace Week4
 
         int currentCam = 0;
         bool camOn = false;
-        [SerializeField] TMP_Text endText;
 
         public Enemy[] listOfEnemies { get; private set; }
         public List<Transform> listOfLocations = new();
@@ -58,11 +64,14 @@ namespace Week4
                 return;
 
             timePassed += Time.deltaTime;
-            timeSlider.value = (timePassed / gameLength);
-            timeText.text = $"Time Left: {timePassed:F0}/{gameLength:F0}";
+            timeSlider.value = timePassed / gameLength;
+            timeText.text = $"Time Left: {timePassed:F1}";
 
             if (timePassed > gameLength)
+            {
                 GameOver("You Won!");
+                return;
+            }
 
             if (cameraPower == 0f)
                 camOn = false;
@@ -79,7 +88,7 @@ namespace Week4
                 cameraPower -= Time.deltaTime;
             cameraPower = Mathf.Max(0f, cameraPower);
             cameraSlider.value = cameraPower / maxPower;
-            cameraText.text = $"Camera Battery: {cameraPower:F0}";
+            cameraText.text = $"Camera Battery: {cameraPower:F1}";
         }
 
         public void GameOver(string text)

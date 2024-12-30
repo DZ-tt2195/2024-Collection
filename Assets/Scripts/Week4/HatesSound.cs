@@ -20,7 +20,7 @@ public class HatesSound : Enemy
         {
             if (currentLocation == Location.Crossroads && Player.instance.soundCenter)
                 MoveToLocation(Player.instance.rightDoor ? Location.Home : Location.Right);
-            else if (currentLocation == Location.Crossroads && Player.instance.soundPath)
+            else if (currentLocation == Location.Crossroads && Player.instance.soundPath && elapsedTime > 1.5f)
                 MoveToLocation(Location.You);
             else if (currentLocation == Location.Crossroads && !CanAttack())
                 elapsedTime = 0f;

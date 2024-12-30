@@ -20,7 +20,7 @@ public class LikesSound : Enemy
         float elapsedTime = 0f;
         while (elapsedTime < time)
         {
-            if (currentLocation == Location.Crossroads && Player.instance.soundCenter && elapsedTime > 2f)
+            if (currentLocation == Location.Crossroads && Player.instance.soundCenter && elapsedTime > 1.5f)
                 MoveToLocation(Location.You);
             else if (currentLocation == Location.Left && Player.instance.soundPath)
                 MoveToLocation(Location.Home);

@@ -41,7 +41,7 @@ namespace Week4
 
         [Foldout("Misc", true)]
         float timePassed = 0f;
-        float gameLength = 180f;
+        float gameLength = 200f;
         float cameraPower;
         float maxPower = 50f;
         bool gameOn = true;
@@ -87,7 +87,7 @@ namespace Week4
             {
                 camOn = !camOn;
                 if (camOn)
-                    AudioManager.instance.PlaySound(cameraSound, 0.5f);
+                    AudioManager.instance.PlaySound(cameraSound, 0.35f);
             }
 
             Vector3 newPosition = camOn ? listOfLocations[currentCam].transform.position : listOfLocations[^1].transform.position;
@@ -111,7 +111,7 @@ namespace Week4
 
             cameraMap.gameObject.SetActive(false);
             gameButtons.gameObject.SetActive(false);
-            AudioManager.instance.PlaySound(won ? winSound : loseSound, 0.5f);
+            AudioManager.instance.PlaySound(won ? winSound : loseSound, 0.35f);
 
             Vector3 newPosition = listOfLocations[^1].transform.position;
             mainCam.transform.localPosition = new(newPosition.x, newPosition.y, -10);
@@ -122,7 +122,7 @@ namespace Week4
         public void SwitchCamera(int newCam)
         {
             currentCam = newCam;
-            AudioManager.instance.PlaySound(cameraSound, 0.5f);
+            AudioManager.instance.PlaySound(cameraSound, 0.35f);
         }
 
         public void ToggleLeftDoor(TMP_Text textBox)
@@ -141,18 +141,18 @@ namespace Week4
 
         void DoorSound(bool open)
         {
-            AudioManager.instance.PlaySound(open ? doorOpen : doorClose, 0.5f);
+            AudioManager.instance.PlaySound(open ? doorOpen : doorClose, 0.35f);
         }
 
         public void ToggleLightCenter()
         {
             lightCenter = true;
-            AudioManager.instance.PlaySound(lightCenterSound, 0.5f);
+            AudioManager.instance.PlaySound(lightCenterSound, 0.35f);
             StartCoroutine(Disable());
 
             IEnumerator Disable()
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.35f);
                 lightCenter = false;
             }
         }
@@ -160,12 +160,12 @@ namespace Week4
         public void ToggleSoundCenter()
         {
             soundCenter = true;
-            AudioManager.instance.PlaySound(soundCenterSound, 0.5f);
+            AudioManager.instance.PlaySound(soundCenterSound, 0.35f);
             StartCoroutine(Disable());
 
             IEnumerator Disable()
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.35f);
                 soundCenter = false;
             }
         }
@@ -173,12 +173,12 @@ namespace Week4
         public void ToggleLightPath()
         {
             lightPath = true;
-            AudioManager.instance.PlaySound(lightPathSound, 0.5f);
+            AudioManager.instance.PlaySound(lightPathSound, 0.35f);
             StartCoroutine(Disable());
 
             IEnumerator Disable()
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.35f);
                 lightPath = false;
             }
         }
@@ -186,12 +186,12 @@ namespace Week4
         public void ToggleSoundPath()
         {
             soundPath = true;
-            AudioManager.instance.PlaySound(soundPathSound, 0.5f);
+            AudioManager.instance.PlaySound(soundPathSound, 0.35f);
             StartCoroutine(Disable());
 
             IEnumerator Disable()
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.35f);
                 soundPath = false;
             }
         }

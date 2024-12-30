@@ -13,7 +13,7 @@ namespace Week4
         protected Location startLocation;
         int difficulty;
 
-        private void Start()
+        protected virtual void Start()
         {
             difficulty = PlayerPrefs.GetInt(this.name);
             MoveToLocation(startLocation);
@@ -26,11 +26,11 @@ namespace Week4
             this.transform.localPosition = SpawnPoint();
             StopAllCoroutines();
 
-            float variable = 13.5f - difficulty;
+            float variable = 13f - difficulty;
             if (currentLocation == Location.You)
                 Player.instance.GameOver("You Lost.", false);
             else if (difficulty > 0)
-                StartCoroutine(WhileInRoom(Random.Range(variable, variable + 4f)));
+                StartCoroutine(WhileInRoom(Random.Range(variable, variable*1.5f)));
         }
 
         protected virtual Vector2 SpawnPoint()
@@ -40,7 +40,7 @@ namespace Week4
             {
                 result = new Vector2(Random.Range(-0.35f, 0.35f), Random.Range(-0.35f, 0.35f));
             }
-            while ((result.x > 0.2f && result.y < 0f) || (result.x < -0.2f && result.y > 0.2f));
+            while ((result.x > 0.15f && result.y < 0f) || (result.x < -0.15f && result.y > 0.15f));
             return result;
         }
 

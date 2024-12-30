@@ -20,7 +20,7 @@ public class LikesLight : Enemy
         float elapsedTime = 0f;
         while (elapsedTime < time)
         {
-            if (currentLocation == Location.Crossroads && Player.instance.lightCenter && elapsedTime > 2f)
+            if (currentLocation == Location.Crossroads && Player.instance.lightCenter && elapsedTime > 1.5f)
                 MoveToLocation(Location.You);
             else if (currentLocation == Location.Right && Player.instance.lightPath)
                 MoveToLocation(Location.Home);

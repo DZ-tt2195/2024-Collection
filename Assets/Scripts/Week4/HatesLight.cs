@@ -20,7 +20,7 @@ public class HatesLight : Enemy
         {
             if (currentLocation == Location.Crossroads && Player.instance.lightCenter)
                 MoveToLocation(Player.instance.leftDoor ? Location.Home : Location.Left);
-            else if (currentLocation == Location.Crossroads && Player.instance.lightPath)
+            else if (currentLocation == Location.Crossroads && Player.instance.lightPath && elapsedTime > 1.5f)
                 MoveToLocation(Location.You);
             else if (currentLocation == Location.Crossroads && !CanAttack())
                 elapsedTime = 0f;
